@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Router from "./app/Router";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { useUserContext } from "./providers/UserProvider";
 
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Asegúrate de importar Routes y Route
+
+import Login from './Pages/Login'
+
+import Register from './pages/Register'
+
+const App = () => {
+  const { user } = useUserContext();
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <BrowserRouter>
+      <Routes>
+        {/* El componente Router debería manejar las rutas internas */}
+        {user ? (
+          <Route path="*" element={<Router />} />
+        ) : (
+          <>
+            <Route path="/register" element={<Register />} />
+            <Route path="*" element={<Login />} />
+          </>
+        )}
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
-export default App
+export default App;
