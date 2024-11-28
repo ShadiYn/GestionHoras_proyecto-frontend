@@ -12,8 +12,6 @@ const Login = ()=>{
 
     const handleLogin = async ()=>{
         console.log('credenciales antes de hacer login:',credentials);
-
-
         try{
             const response = await login (credentials);
 

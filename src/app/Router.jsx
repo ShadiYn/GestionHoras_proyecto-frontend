@@ -1,11 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 
 import Home from '../pages/Home';
+import Calendar from '../pages/Calendar';
 
 const Router = ()=>(
     <Routes>
     <Route index element={<Home />} />
 
+    <Route path="/calendar" element={<Calendar />} />
     
 
 
