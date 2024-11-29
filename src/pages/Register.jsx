@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { registro } from "../api/api";
 
 const Register = () => {
@@ -23,7 +23,7 @@ const Register = () => {
     try {
         const userData = { username, name, last_name: lastName, password };
         const response = await registro(userData);
-        setSuccessMessage("Registro exitoso. Puedes iniciar sesión.");
+        setSuccessMessage("Registro exitoso. Puedes iniciar sesión."),response;
     } catch (err) {
         // Asegúrate de capturar el error específico del backend
         setError(err.response ? err.response.data : "Error al registrar el usuario. Intenta de nuevo.");

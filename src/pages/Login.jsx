@@ -1,27 +1,32 @@
-import React, { useState } from "react";
+// Login.jsx
+import { useState } from "react";
 import { loginUser } from "../api/api";
-import { useNavigate } from "react-router-dom"; // Importar useNavigate de React Router v6
+import { useNavigate } from "react-router-dom"; // Usamos el hook de navegación
+import { useUserContext } from "../providers/UserProvider"; // Accedemos al contexto de usuario
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
+  const navigate = useNavigate();
+  const { setUser } = useUserContext(); // Accedemos a setUser para actualizar el contexto
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Resetear errores
+    setError(""); // Limpiar errores previos
 
     try {
       const credentials = { username, password };
       const result = await loginUser(credentials);
-
-      // Aquí puedes guardar el token o ID de usuario en el estado global o en localStorage
-      console.log("Login exitoso:", result);
-      
-      // Redirige al dashboard u otra página
-      navigate("/dashboard"); // Redirige con navigate en lugar de history.push
-
+console.log(22222, result)
+      if (result) {
+        // Si el login es exitoso, guardamos el token y el usuario en el contexto
+        localStorage.setItem("authToken", result.token); // Guardamos el token en localStorage
+        setUser({ token: result.token, username }); // Actualizamos el estado del usuario
+console.log(1111111)
+        // Redirigimos a la página de Home
+        navigate("/home");
+      }
     } catch (err) {
       setError("Credenciales incorrectas. Intenta de nuevo.");
     }

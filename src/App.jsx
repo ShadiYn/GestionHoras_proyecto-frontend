@@ -1,24 +1,25 @@
-import Router from "./app/Router";
-
-import { useUserContext } from "./providers/UserProvider";
-
-import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Asegúrate de importar Routes y Route
-
-import Login from './Pages/Login'
-
-import Register from './pages/Register'
+// App.jsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useUserContext } from './providers/UserProvider';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Router from './app/Router'; // Rutas protegidas
 
 const App = () => {
-  const { user } = useUserContext();
+  const { user } = useUserContext(); // Obtenemos el usuario desde el contexto
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* El componente Router debería manejar las rutas internas */}
+        {/* Si el usuario está logueado, redirigimos a las rutas protegidas */}
         {user ? (
           <Route path="*" element={<Router />} />
         ) : (
           <>
+            {/* Si no está logueado, redirigimos a Login */}
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            {/* Para cualquier otra ruta, redirigimos a Login */}
             <Route path="*" element={<Login />} />
           </>
         )}

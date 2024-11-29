@@ -1,19 +1,13 @@
-import { Route, Routes } from "react-router-dom";
+// Router.jsx
+import { Routes, Route } from "react-router-dom";
+import Home from "../pages/Home"; // Página de inicio
+import Calendar from "../pages/Calendar"; // Otra ruta protegida
 
-import Home from '../pages/Home';
-import Calendar from '../pages/Calendar';
-
-const Router = ()=>(
-    <Routes>
-    <Route index element={<Home />} />
-
-    <Route path="/calendar" element={<Calendar />} />
-    
-
-
-   
-    {/* Es muy recomendable añadir esta ruta para obtener un mensaje de error en el caso de que la ruta no exista. De lo contrario, si la ruta no existe llegaremos a una página en blanco */}
-    <Route path="*" element={<div>404</div>} />
+const Router = () => (
+  <Routes>
+    <Route path="/home" element={<Home />} /> {/* Ruta de inicio */}
+    <Route path="/calendar" element={<Calendar />} /> {/* Ruta de calendario */}
+    <Route path="*" element={<div>404 - Página no encontrada</div>} /> {/* Error por si la ruta no existe */}
   </Routes>
 );
 
