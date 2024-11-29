@@ -1,52 +1,59 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useUserContext } from "../providers/UserProvider";
-import {login} from '../api/api';
+import React, { useState } from "react";
+import { loginUser } from "../api/api";
+import { useNavigate } from "react-router-dom"; // Importar useNavigate de React Router v6
 
-const Login = ()=>{
-    const [credentials,setCredentials]= useState({username:"",password:""});
+const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
 
-    const navigate = useNavigate();
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(""); // Resetear errores
 
-    const {setUser}=useUserContext();
+    try {
+      const credentials = { username, password };
+      const result = await loginUser(credentials);
 
-    const handleLogin = async ()=>{
-        console.log('credenciales antes de hacer login:',credentials);
-        try{
-            const response = await login (credentials);
+      // Aquí puedes guardar el token o ID de usuario en el estado global o en localStorage
+      console.log("Login exitoso:", result);
+      
+      // Redirige al dashboard u otra página
+      navigate("/dashboard"); // Redirige con navigate en lugar de history.push
 
-            console.log('respuesta del login:', response);
-            setUser(response);
-            navigate("/");
-        }catch(error){
-            console.error("Error durante logn:",error);
-            <p>No se pudo iniciar sesion, intente de nuevo</p>
-        }
-    };
-
-
-    const handleRegister = ()=>{
-        navigate("/register");
+    } catch (err) {
+      setError("Credenciales incorrectas. Intenta de nuevo.");
     }
-return(
-   <div className="contenido">
-    <div className="card-container">
-        <div className="login-form">
-            <h1>Iniciar Sesión</h1>
-            <input type="text" placeholder="Usuario" onChange={(e)=> setCredentials({...credentials,username: e.target.value})}/>
+  };
 
-            <input type="password" placeholder="contraseña" onChange={(e) =>setCredentials({...credentials,password: e.target.value})}/>
-
-            <button onClick={handleLogin}>Iniciar Sesión</button>
-            <button className="register-button"
-            onClick={handleRegister}>Regístrate</button>
+  return (
+    <div>
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
+        <div>
+          <label>Username:</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
         </div>
-
-        <div className="login-image">
-
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </div>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <button type="submit">Login</button>
+      </form>
     </div>
-   </div>
-)
-}
+  );
+};
+
 export default Login;

@@ -1,64 +1,93 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { registro } from "../api/api";
 
+const Register = () => {
+  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+
+    if (password !== confirmPassword) {
+        setError("Las contraseñas no coinciden.");
+        return;
+    }
+
+    try {
+        const userData = { username, name, last_name: lastName, password };
+        const response = await registro(userData);
+        setSuccessMessage("Registro exitoso. Puedes iniciar sesión.");
+    } catch (err) {
+        // Asegúrate de capturar el error específico del backend
+        setError(err.response ? err.response.data : "Error al registrar el usuario. Intenta de nuevo.");
+    }
+};
 
 
-const Register = ()=>{
-    const [formData,setFormData]= useState({
-        //colocar los datos necesarios para iniciar sesión!
-    });
-
-    const navigate = useNavigate();
-
-    const handleChange = (e)=>{
-        const {name,value} = e.target;
-        setFormData({...formData,[name]: value});
-    };
-
-    const handleSubmit = async (e)=>{
-
-        e.preventDefault();
-        try{
-            await registro(formData);
-            console.log('Registro exitoso');
-            navigate("/");
-        }catch(error){
-            console.error('error en el registro intentalo de nuevo:', error)
-            throw error;
-        }
-    };
-
-
-
-
-
-    return(
-        <div className="contenido">
-            <div className="card-container">
-                <div className="register-form">
-                    <h1>Registrarse</h1>
-                    <form onSubmit={handleSubmit}>
-                        <input type="text"
-                        name="username"
-                        placeholder="nombre completo?"
-                        value={formData.username}
-                        onChange={handleChange}
-                        required/>
-
-                        {
-                            //lo mismo pero con los demás campos necesarios que falta por identificar
-                        }
-
-                        <button type="submit">Registrarse</button>
-                    </form>
-                    <button className="login-button" onClick={()=> navigate("/")}>Volver a Login</button>
-                </div>
-                <div className="register-image">
-
-                </div>
-            </div>
+  return (
+    <div>
+      <h2>Registro</h2>
+      <form onSubmit={handleRegister}>
+        <div>
+          <label>Username:</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
         </div>
-    )
-}
+        <div>
+          <label>Name:</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Last Name:</label>
+          <input
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Confirm Password:</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+
+        <button type="submit">Registrar</button>
+      </form>
+    </div>
+  );
+};
+
 export default Register;
