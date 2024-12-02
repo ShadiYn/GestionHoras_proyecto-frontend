@@ -18,18 +18,27 @@ const Login = () => {
     try {
       const credentials = { username, password };
       const result = await loginUser(credentials);
-console.log(22222, result)
+      console.log(22222, result);
       if (result) {
         // Si el login es exitoso, guardamos el token y el usuario en el contexto
         localStorage.setItem("authToken", result.token); // Guardamos el token en localStorage
-        setUser({ token: result.token, username }); // Actualizamos el estado del usuario
-console.log(1111111)
+        setUser({
+          token: result.token,
+          username: result.username,
+          name: result.name,
+          lastname: result.lastName,
+        }); // Actualizamos el estado del usuario
+        console.log(1111111);
         // Redirigimos a la página de Home
         navigate("/home");
       }
     } catch (err) {
       setError("Credenciales incorrectas. Intenta de nuevo.");
     }
+  };
+
+  const handleRegister = () => {
+    navigate("/register");
   };
 
   return (
@@ -56,6 +65,12 @@ console.log(1111111)
         </div>
         {error && <p style={{ color: "red" }}>{error}</p>}
         <button type="submit">Login</button>
+        <br />
+        {!localStorage.getItem("authToken") && (
+          <button type="button" onClick={handleRegister}>
+            Register
+          </button>
+        )}
       </form>
     </div>
   );

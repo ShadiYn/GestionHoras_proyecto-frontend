@@ -1,8 +1,7 @@
-const Profile = ()=>{
-    return(
-        <div>
+import { useUserContext } from "../providers/UserProvider";
 
-        </div>
-    )
-}
+const Profile = () => {
+  const { user } = useUserContext();
+  return <div>hola, {user?.name} </div>;
+};
 export default Profile;

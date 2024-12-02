@@ -41,29 +41,22 @@ export const loginUser = async ({ username, password }) => {
     }
 };
   
-
-
-
-
-    //configuramos el token de autenticación en axios
-
 // Configurar el token de autenticación en axios
 const setAuth = async (token) => {
     console.log('Configurando autorización con token:', token);
     baseUrl.defaults.headers.common.Authorization = `Basic ${token}`;
 };
 
-
-
-    //funcoin registro
     // Función de registro de usuario
     export const registro = async (userData) => {
         try {
-            const response = await axios.post(
-                'http://localhost:8080/register', // Endpoint
+            const response = await baseUrl.post(
+                '/register', // Endpoint
                 userData // Datos del formulario
             );
+            console.log(response.data)
             return response.data;
+            
         } catch (error) {
             if (error.response) {
                 throw error.response.data; // Manejar errores del servidor
