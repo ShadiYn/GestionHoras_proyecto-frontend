@@ -1,7 +1,6 @@
 // Login.jsx
 import { useState } from "react";
 import { loginUser } from "../api/api";
-import { userDetails } from "../api/api";
 import { useNavigate } from "react-router-dom"; // Usamos el hook de navegación
 import { useUserContext } from "../providers/UserProvider"; // Accedemos al contexto de usuario
 
@@ -19,23 +18,16 @@ const Login = () => {
     try {
       const credentials = { username, password };
       const result = await loginUser(credentials);
-      console.log(22222, result);
       if (result) {
-        // Si el login es exitoso, guardamos el token y el usuario en el contexto
-        localStorage.setItem("authToken", result.token); // Guardamos el token en localStorage
-
-        const userInfo = await userDetails(result.token);
-
         // Actualizamos el estado del usuario
         setUser({
           token: result.token,
-          username: userInfo.username,
-          name: userInfo.name,
-          lastname: userInfo.lastName,
-          salary: userInfo.eurosPerHour,
-          schedule: userInfo.isFlexible,
+          username: result.username,
+          name: result.name,
+          lastname: result.lastName,
+          salary: result.eurosPerHour,
+          schedule: result.isFlexible,
         });
-        console.log(1111111);
         // Redirigimos a la página de Home
         navigate("/home");
       }

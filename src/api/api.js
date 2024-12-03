@@ -11,6 +11,7 @@ export const loginUser = async ({ username, password }) => {
 
     // Log para ver el token generado
     console.log('Generando token para login:', token);
+    localStorage.setItem("authToken", token);
 
     try {
         // Log para verificar los datos enviados
@@ -65,17 +66,22 @@ const setAuth = async (token) => {
         }
     };
 
-    export const userDetails = async (token) => {
-    try {
-      const response = await baseUrl.post("/usersettings", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok)
-        throw new Error("Error al obtener detalles del usuario");
-      return await response.json();
-    } catch (error) {
-      console.error("Error al cargar detalles del usuario:", error);
-      return {};
+export const userDetails = async (token) => {
+  try {
+    console.log("44444444444444444444444444444444", token)
+    const response = await baseUrl.get("/usersettings", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log("Result.data", response.data)
+    return response.data; // Axios devuelve la respuesta directamente como JSON
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      console.error("Error 401: No autorizado. Verifica el token.");
+    } else {
+      console.error("Error al cargar detalles del usuario:", error.message);
     }
-  };
+    return {};
+  }
+};
+
     
