@@ -22,12 +22,18 @@ const Login = () => {
       if (result) {
         // Si el login es exitoso, guardamos el token y el usuario en el contexto
         localStorage.setItem("authToken", result.token); // Guardamos el token en localStorage
+
+        const userInfo = await userDetails(result.token);
+
+        // Actualizamos el estado del usuario
         setUser({
           token: result.token,
-          username: result.username,
-          name: result.name,
-          lastname: result.lastName,
-        }); // Actualizamos el estado del usuario
+          username: userInfo.username,
+          name: userInfo.name,
+          lastname: userInfo.lastName,
+          salary: userInfo.eurosPerHour,
+          schedule: userInfo.isFlexible,
+        });
         console.log(1111111);
         // Redirigimos a la página de Home
         navigate("/home");
@@ -39,6 +45,20 @@ const Login = () => {
 
   const handleRegister = () => {
     navigate("/register");
+  };
+
+  const userDetails = async (token) => {
+    try {
+      const response = await fetch("/usersettings", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok)
+        throw new Error("Error al obtener detalles del usuario");
+      return await response.json();
+    } catch (error) {
+      console.error("Error al cargar detalles del usuario:", error);
+      return {};
+    }
   };
 
   return (
