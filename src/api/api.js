@@ -69,9 +69,13 @@ const setAuth = async (token) => {
 export const userDetails = async (token) => {
   try {
     console.log("44444444444444444444444444444444", token)
-    const response = await baseUrl.get("/usersettings", {
+    const response = await baseUrl.get("/usersettings"
+        
+        /*
+        , {
       headers: { Authorization: `Bearer ${token}` },
-    });
+    }
+      */);
     console.log("Result.data", response.data)
     return response.data; // Axios devuelve la respuesta directamente como JSON
   } catch (error) {
