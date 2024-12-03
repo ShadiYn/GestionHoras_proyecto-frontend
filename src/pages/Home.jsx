@@ -16,6 +16,7 @@ const Home = () => {
     setUser(null);
     navigate("/login");
   };
+  
 
   return (
     <div>
@@ -31,23 +32,53 @@ const Home = () => {
         <button className="Perfil-btn" onClick={handleLogout}>
           Logout
         </button>
+
+
+
       </div>
+
+      
+    <div>
+      <button>Check-in</button>
+        <button>Check-out</button>
+    </div>
+       
+        <div className="card">
+          <h3>Horas del mes</h3>
+          <p>{/*summary.totalHours || 0*/}suma total de las horas hechas hasta ahora del mes</p>
+        </div>
+        <div className="card">
+          <h3>Ausencias</h3>
+          <p>{/*summary.absences || 0*/}total ausencias</p>
+        </div>
+        <div className="card">
+          <h3>Horas Complementarias</h3>
+          <p>{/*summary.totalOvertime || 0*/} dependiendo de las horas que tenga</p>
+        </div>
+
+        <div className="footer">
+
+          <h2>Total aproximado a cobrar: </h2>
+          <p>
+          Total a cobrar = Horas mes * precio fijo + Horas Complementarias * PrecioHora compleemntaria
+            </p>
+
+            </div>
+
+
+
+
+      <br></br>
       <div className="explicación">
-        <p>
-          Aquí tengo pensado que aparecerá una targeta/botón - que sea para el
-          check in/check out de ese mismo día
-        </p>
+       
         <p>
           Se podrán hacer más de un check in/check out para contar los descansos
           realizados
         </p>
         <p>
           finalmente una targeta que implementa las horas trabajadas ese día
-        </p>
-        <p>
-          Es decir la targeta contará las horas checkeadas chekc in y check out
-          con el concepto de trabajo y no de descanso o algo así
-        </p>
+    </p>
+
       </div>
     </div>
   );
