@@ -64,4 +64,18 @@ const setAuth = async (token) => {
             throw error.message; // Otros errores
         }
     };
+
+    export const userDetails = async (token) => {
+    try {
+      const response = await baseUrl.post("/usersettings", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok)
+        throw new Error("Error al obtener detalles del usuario");
+      return await response.json();
+    } catch (error) {
+      console.error("Error al cargar detalles del usuario:", error);
+      return {};
+    }
+  };
     

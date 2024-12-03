@@ -1,6 +1,7 @@
 // Login.jsx
 import { useState } from "react";
 import { loginUser } from "../api/api";
+import { userDetails } from "../api/api";
 import { useNavigate } from "react-router-dom"; // Usamos el hook de navegación
 import { useUserContext } from "../providers/UserProvider"; // Accedemos al contexto de usuario
 
@@ -45,20 +46,6 @@ const Login = () => {
 
   const handleRegister = () => {
     navigate("/register");
-  };
-
-  const userDetails = async (token) => {
-    try {
-      const response = await fetch("/usersettings", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok)
-        throw new Error("Error al obtener detalles del usuario");
-      return await response.json();
-    } catch (error) {
-      console.error("Error al cargar detalles del usuario:", error);
-      return {};
-    }
   };
 
   return (
