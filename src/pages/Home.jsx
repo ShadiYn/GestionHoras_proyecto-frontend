@@ -1,86 +1,86 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUserContext } from "../providers/UserProvider";
+import axios from 'axios';  // Asegúrate de tener axios instalado
+import '../app/Home.css'; 
 
 const Home = () => {
   const { setUser } = useUserContext();
   const navigate = useNavigate();
+  
+  // Estado para almacenar los intervalos y las horas trabajadas
+  const [intervals, setIntervals] = useState([]);
+  const [totalHours, setTotalHours] = useState(0);
+  
+  const userId = 1;  // Suponiendo que el userId es 1 por ahora
 
   const handleCalendar = () => {
     navigate("/calendar");
   };
+  
   const handlePerfil = () => {
     navigate("/Perfil");
   };
+  
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setUser(null);
     navigate("/login");
   };
+
   
 
+  // Función para calcular el total de horas trabajadas
+  
+
+
+
   return (
-    <div>
-      <div className="navbar">
-        <button className="Calendar-btn" onClick={handleCalendar}>
-          Calendario
-        </button>
+    <div className="home-container">
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="navbar-links">
+          <button className="nav-btn" onClick={handleCalendar}>Calendario</button>
+          <button className="nav-btn" onClick={handlePerfil}>Perfil</button>
+          <button className="nav-btn logout-btn" onClick={handleLogout}>Logout</button>
+        </div>
+      </nav>
 
-        <button className="Perfil-btn" onClick={handlePerfil}>
-          Perfil
-        </button>
-
-        <button className="Perfil-btn" onClick={handleLogout}>
-          Logout
-        </button>
-
-
-
+      {/* Check-in and Check-out Buttons */}
+      <div className="action-buttons">
+        <button className="action-btn">Check-in</button>
+        <button className="action-btn">Check-out</button>
       </div>
 
-      
-    <div>
-      <button>Check-in</button>
-        <button>Check-out</button>
-    </div>
-       
+      {/* Info Cards */}
+      <div className="info-cards">
         <div className="card">
           <h3>Horas del mes</h3>
-          <p>{/*summary.totalHours || 0*/}suma total de las horas hechas hasta ahora del mes</p>
+          <p>{totalHours.toFixed(2)} horas trabajadas hasta ahora</p>
         </div>
         <div className="card">
           <h3>Ausencias</h3>
-          <p>{/*summary.absences || 0*/}total ausencias</p>
+          <p>total ausencias</p>
         </div>
         <div className="card">
           <h3>Horas Complementarias</h3>
-          <p>{/*summary.totalOvertime || 0*/} dependiendo de las horas que tenga</p>
+          <p>dependiendo de las horas que tenga</p>
         </div>
+      </div>
 
-        <div className="footer">
+      {/* Footer */}
+      <div className="footer">
+        <h2>Total aproximado a cobrar:</h2>
+        <p>Total a cobrar = Horas mes * precio fijo + Horas Complementarias * PrecioHora complementaria</p>
+      </div>
 
-          <h2>Total aproximado a cobrar: </h2>
-          <p>
-          Total a cobrar = Horas mes * precio fijo + Horas Complementarias * PrecioHora compleemntaria
-            </p>
-
-            </div>
-
-
-
-
-      <br></br>
-      <div className="explicación">
-       
-        <p>
-          Se podrán hacer más de un check in/check out para contar los descansos
-          realizados
-        </p>
-        <p>
-          finalmente una targeta que implementa las horas trabajadas ese día
-    </p>
-
+      {/* Explanation Section */}
+      <div className="explicacion">
+        <p>Se podrán hacer más de un check-in/check-out para contar los descansos realizados</p>
+        <p>Finalmente, una tarjeta que implementa las horas trabajadas ese día</p>
       </div>
     </div>
   );
 };
+
 export default Home;
