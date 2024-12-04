@@ -88,4 +88,55 @@ export const userDetails = async (token) => {
   }
 };
 
+
+// Función para iniciar el intervalo (y crear el WorkDay si no existe)
+export // Asegurarte de que userId es un número
+const startInterval = async (intervalId) => {
+  try {
+    // Asegúrate de que userId es un número
+    if (typeof userId !== "number") {
+      console.error("userId debe ser un número");
+      return;
+    }
+    
+    const response = await axios.get(`http://localhost:8080/intervals/start/${intervalId}`);
+    console.log("Intervalo iniciado:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error al iniciar el intervalo", error);
+  }
+};
+
+  
+
+//funcion para finalizar el intervalo
+export const endInterval = async(intervalId)=> { 
+    try{
+        const response = await baseUrl.get(`/intervals/end/${intervalId}`);
+        console.log("fin del intervalo",response.data);
+        return response.data;
+    }catch(error){
+        console.error("error al finalizar intervalo:",error);
+        throw error;
+    }
+};
+
+
+//funcion obtener intervalos de un usuario
+
+export const getUserIntervals = async (userId) => {
+    if (!userId) {
+      throw new Error("User ID is missing");
+    }
+    try {
+      const response = await baseUrl.get(`/intervals/${userId}`);
+      console.log("intervalos del usuario:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("No se han obtenido los intervalos", error);
+      throw error;
+    }
+  };
+  
+
     

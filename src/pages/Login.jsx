@@ -14,14 +14,15 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(""); // Limpiar errores previos
-
+  
     try {
       const credentials = { username, password };
       const result = await loginUser(credentials);
       if (result) {
-        // Actualizamos el estado del usuario
+        // Asegúrate de que el resultado contiene un campo id
         setUser({
           token: result.token,
+          id: result.id,  // Verifica que el 'id' esté en la respuesta
           username: result.username,
           name: result.name,
           lastname: result.lastName,
@@ -32,9 +33,10 @@ const Login = () => {
         navigate("/home");
       }
     } catch (err) {
-      setError("Credenciales incorrectas. Intenta de nuevo.");
+      setError("Credenciales incorrectas. Intenta de nuevo.",err);
     }
   };
+  
 
   const handleRegister = () => {
     navigate("/register");

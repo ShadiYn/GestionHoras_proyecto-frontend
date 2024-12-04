@@ -7,7 +7,8 @@ const Register = () => {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [isFlexible, setIsFlexible] = useState(false);
-  const [eurosPerHour, setEurosPerHour] = useState("");
+  const [eurosPerHour, setEurosPerHour] = useState("");  // Debe ser un string primero
+  const [eurosPerExtraHours, setEurosPerExtraHours] = useState("");  // Agregado este campo
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -22,20 +23,31 @@ const Register = () => {
       return;
     }
 
+    // Convertir eurosPerHour y eurosPerExtraHours a float
+    const eurosPerHourFloat = parseFloat(eurosPerHour);
+    const eurosPerExtraHoursFloat = parseFloat(eurosPerExtraHours);
+
+    // Verificar que los valores sean números válidos
+    if (isNaN(eurosPerHourFloat) || isNaN(eurosPerExtraHoursFloat)) {
+      setError("Los valores de salario deben ser números válidos.");
+      return;
+    }
+
     try {
       const userData = {
         username,
         name,
         lastName,
         password,
-        eurosPerHour,
+        eurosPerHour: eurosPerHourFloat,  // Pasamos el valor como número
+        eurosPerExtraHours: eurosPerExtraHoursFloat,  // Incluido el nuevo campo
         isFlexible,
       };
+      
       const response = await registro(userData);
-
-      setSuccessMessage("Registro exitoso. Puedes iniciar sesión."), response;
+      setSuccessMessage("Registro exitoso. Puedes iniciar sesión.");
+      console.log(response.data);
     } catch (err) {
-      // Asegúrate de capturar el error específico del backend
       setError(
         err.response
           ? err.response.data
@@ -125,6 +137,14 @@ const Register = () => {
             value={eurosPerHour}
             onChange={(e) => setEurosPerHour(e.target.value)}
             required
+          />
+        </div>
+        <div>
+          <label>Extra Hours Salary/h:</label> {/* Nuevo campo de salario extra */}
+          <input
+            type="text"
+            value={eurosPerExtraHours}
+            onChange={(e) => setEurosPerExtraHours(e.target.value)}
           />
         </div>
 
