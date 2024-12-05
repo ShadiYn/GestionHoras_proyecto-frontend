@@ -88,6 +88,19 @@ export const userDetails = async (token) => {
   }
 };
 
+//obtener/crear workday
+export const getOrCreateCurrentWorkDay = async () => {
+    try {
+        const response = await baseUrl.get('/workdays/current');
+        console.log("WorkDay actual creado o encontrado:", response.data);
+        return response.data; // Devuelve el WorkDay del día actual
+    } catch (error) {
+        console.error("Error al obtener o crear el WorkDay actual:", error);
+        throw error;
+    }
+};
+
+
 
 // Función para iniciar el intervalo (y crear el WorkDay si no existe)
 export // Asegurarte de que userId es un número

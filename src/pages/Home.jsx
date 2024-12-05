@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContext } from "../providers/UserProvider";
 import axios from 'axios';  // Asegúrate de tener axios instalado
 import '../app/Home.css'; 
-import { endInterval, getUserIntervals, startInterval } from '../api/api';
+import { endInterval, getUserIntervals, startInterval,getOrCreateCurrentWorkDay } from '../api/api';
 
 const Home = () => {
   const { setUser } = useUserContext();
@@ -29,6 +29,25 @@ const Home = () => {
       console.error("Error al iniciar el intervalo", error);
     }
   };
+
+  //obtener o crear workday
+  useEffect(() => {
+    const initWorkDay = async () => {
+        try {
+            if (userId) {
+                const workDay = await getOrCreateCurrentWorkDay();
+                console.log("WorkDay inicializado:", workDay);
+                // Aquí podrías guardar el WorkDay en un estado si es necesario
+            } else {
+                console.error("El userId es undefined. No se puede inicializar el WorkDay.");
+            }
+        } catch (error) {
+            console.error("Error al inicializar el WorkDay:", error);
+        }
+    };
+
+    initWorkDay();
+}, [userId]);
   
   
 
