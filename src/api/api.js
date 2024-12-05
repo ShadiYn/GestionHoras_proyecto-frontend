@@ -100,6 +100,30 @@ export const getOrCreateCurrentWorkDay = async () => {
     }
 };
 
+//check-in
+export const handleCheckIn = async (intervalId) => {
+    try {
+        await axios.get(`/intervals/start/${intervalId}`);
+        alert("Check-in registrado!");
+    } catch (error) {
+        console.error("Error al registrar el check-in:", error);
+    }
+};
+
+//check out
+export const handleCheckOut = async (intervalId) => {
+    try {
+        await axios.get(`/intervals/end/${intervalId}`);
+        alert("Check-out registrado!");
+    } catch (error) {
+        console.error("Error al registrar el check-out:", error);
+    }
+};
+
+//obtener horas
+
+
+
 
 
 // Función para iniciar el intervalo (y crear el WorkDay si no existe)
@@ -133,7 +157,17 @@ export const endInterval = async(intervalId)=> {
         throw error;
     }
 };
-
+//intervalos de cada mes
+export const getIntervalsForMonth = async (userId) => {
+  try {
+    const response = await axios.get(`/intervals/month/${userId}`);
+    console.log(response.data); // Aquí puedes manejar los intervalos obtenidos
+    return response.data;
+  } catch (error) {
+    console.error('Error obteniendo los intervalos del mes:', error);
+    return [];
+  }
+};
 
 //funcion obtener intervalos de un usuario
 
@@ -142,7 +176,7 @@ export const getUserIntervals = async (userId) => {
       throw new Error("User ID is missing");
     }
     try {
-      const response = await baseUrl.get(`/intervals/${userId}`);
+      const response = await baseUrl.get(`/intervals/interval/${userId}`);
       console.log("intervalos del usuario:", response.data);
       return response.data;
     } catch (error) {

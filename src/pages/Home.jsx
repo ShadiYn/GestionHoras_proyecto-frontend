@@ -1,154 +1,117 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from "../providers/UserProvider";
-import axios from 'axios';  // Asegúrate de tener axios instalado
 import '../app/Home.css'; 
-import { endInterval, getUserIntervals, startInterval,getOrCreateCurrentWorkDay } from '../api/api';
+import { endInterval, getUserIntervals, startInterval, getOrCreateCurrentWorkDay } from '../api/api';
 
 const Home = () => {
   const { setUser } = useUserContext();
   const navigate = useNavigate();
   const { user } = useUserContext(); // Obtener el usuario desde el contexto
-  const [intervals, setIntervals] = useState([]);
+  const [, setIntervals] = useState([]);
   const [intervalId, setIntervalId] = useState(null); // ID del intervalo activo
   const [totalHours, setTotalHours] = useState(0);
   const userId = user?.id; // Si user es undefined, userId será undefined
+  const [, setWorkdayId] = useState(null);
 
+  // Iniciar el intervalo de trabajo
   const handleStartInterval = async () => {
-    // Verificar si el userId está disponible y no es undefined o null
-    console.log("Valor de userId:", userId); // Esto te ayudará a verificar que el userId está bien
     if (!userId) {
       console.error("userId no está definido o es inválido");
       return;
     }
     try {
       const newIntervalId = await startInterval(userId);
-      setIntervalId(newIntervalId); // guardar el id del intervalo
-      console.log("intervalo iniciado en:", newIntervalId);
+      setIntervalId(newIntervalId);
     } catch (error) {
       console.error("Error al iniciar el intervalo", error);
     }
   };
 
-  //obtener o crear workday
-  useEffect(() => {
-    const initWorkDay = async () => {
-        try {
-            if (userId) {
-                const workDay = await getOrCreateCurrentWorkDay();
-                console.log("WorkDay inicializado:", workDay);
-                // Aquí podrías guardar el WorkDay en un estado si es necesario
-            } else {
-                console.error("El userId es undefined. No se puede inicializar el WorkDay.");
-            }
-        } catch (error) {
-            console.error("Error al inicializar el WorkDay:", error);
-        }
-    };
-
-    initWorkDay();
-}, [userId]);
-  
-  
-
-  const handleEndInterval = async ()=>{
-    try{
+  // Finalizar el intervalo de trabajo
+  const handleEndInterval = async () => {
+    try {
       await endInterval(intervalId);
       setIntervalId(null);
-      console.log("intervalo finalizado");
-      loadIntervals();
-    }catch(error){
-      console.error("Error al finalizar el intervalo",error);
+      loadIntervals();  // Vuelve a cargar los intervalos después de finalizar
+    } catch (error) {
+      console.error("Error al finalizar el intervalo", error);
     }
   };
+
+  // Cargar los intervalos de trabajo para el mes actual
   const loadIntervals = async () => {
     try {
-      const userIntervals = await getUserIntervals(userId);
-      console.log("Intervalos recibidos:", userIntervals);
+      const currentMonth = new Date().getMonth() + 1;  // Mes actual (1-12)
+      const currentYear = new Date().getFullYear();  // Año actual
+
+      // Llamar a la API para obtener los intervalos de ese mes
+      const userIntervals = await getUserIntervals(userId, currentYear, currentMonth);
       
-      // Verifica si la respuesta es un solo objeto, lo convierte a un array
+      // Filtrar y manejar la respuesta como un array
       const intervals = Array.isArray(userIntervals) ? userIntervals : [userIntervals];
       
-      setIntervals(intervals); // Siempre manejamos como un array
-      calculateTotalHours(intervals); // Calculamos las horas totales
+      setIntervals(intervals);
+      calculateTotalHours(intervals); // Calcula el total de horas para este mes
     } catch (error) {
       console.error("Error al cargar los intervalos:", error);
     }
   };
-  
 
-  useEffect(() => {
-    if (userId) {
-      loadIntervals();
-    } else {
-      console.error("El userId es undefined. No se puede cargar los intervalos.");
-    }
-  }, [userId]);  // Dependemos de `userId` para que se ejecute correctamente
-  
-  
-
-  useEffect(() => {
-    if (userId) {
-      loadIntervals();
-    } else {
-      console.error("El userId es undefined. No se puede cargar los intervalos.");
-    }
-  }, [userId]);  // Dependemos de `userId` para que se ejecute correctamente
-  
-  
-
-
-
-  //calculat total horas
+  // Calcular las horas totales trabajadas para el mes
   const calculateTotalHours = (intervals) => {
-    if (!Array.isArray(intervals)) {
-      console.error("Expected intervals to be an array, but received:", intervals);
-      return;
-    }
-  
     let total = 0;
+    
+    // Recorre todos los intervalos
     intervals.forEach(({ start_time, end_time }) => {
       if (start_time && end_time) {
-        const currentDate = new Date(); // Fecha actual
         const [startHour, startMinute] = start_time.split(":").map(Number);
         const [endHour, endMinute] = end_time.split(":").map(Number);
-  
-        // Crear objeto Date con fecha actual y hora/minutos específicos
-        const start = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          currentDate.getDate(), // Cambié getDay() por getDate() para obtener el día del mes
-          startHour,
-          startMinute
-        );
-  
-        const end = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          currentDate.getDate(), // Cambié getDay() por getDate()
-          endHour,
-          endMinute
-        );
-  
+
+        // Crear objetos Date para la hora de inicio y fin del intervalo
+        const currentDate = new Date();  // Usamos la fecha actual para no cambiar el día, solo hora y minutos
+        const start = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), startHour, startMinute);
+        const end = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), endHour, endMinute);
+
         // Calcular la duración en horas
         const duration = (end - start) / (1000 * 60 * 60); // Convertido en horas
-        total += duration;
+        total += duration; // Sumar la duración al total
       }
     });
-  
-    setTotalHours(total);
+
+    setTotalHours(total); // Establecer el total de horas en el estado
   };
-  
 
+  // Inicializar o obtener el WorkDay del usuario
+  useEffect(() => {
+    const initWorkDay = async () => {
+      if (userId) {
+        const workDay = await getOrCreateCurrentWorkDay();
+        setWorkdayId(workDay.id); // Establecer el ID del WorkDay
+      }
+    };
 
+    initWorkDay();
+  }, [userId]);
+
+  // Cargar los intervalos cuando el usuario cambia
+  useEffect(() => {
+    if (userId) {
+      loadIntervals();
+    }
+  }, [userId]);
+
+  // Navegar al calendario
   const handleCalendar = () => {
     navigate("/calendar");
   };
-  
+
+  // Navegar al perfil
   const handlePerfil = () => {
     navigate("/Perfil");
   };
-  
+
+  // Cerrar sesión
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setUser(null);
@@ -171,7 +134,6 @@ const Home = () => {
         <button className="action-btn" onClick={handleStartInterval} disabled={!!intervalId}>Check-in</button>
         <button className="action-btn" onClick={handleEndInterval} disabled={!!intervalId}>Check-out</button>
       </div>
-
 
       {/* Info Cards */}
       <div className="info-cards">
