@@ -8,7 +8,7 @@ const Profile = () => {
     const fetchUserDetails = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        console.log(8888888888888888888, token); // Obtener el token del localStorage
+        console.log('8888888888888888888', token); // Obtener el token del localStorage
         if (token) {
           const userData = await userDetails(token); // Llamada a la API
           setUserInfo(userData); // Actualizar el estado con los datos del usuario

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { loginUser } from "../api/api";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../providers/UserProvider";
@@ -30,7 +30,7 @@ const Login = () => {
         navigate("/home");
       }
     } catch (err) {
-      setError("Credenciales incorrectas. Intenta de nuevo.");
+      setError("Credenciales incorrectas. Intenta de nuevo.",err);
     }
   };
 

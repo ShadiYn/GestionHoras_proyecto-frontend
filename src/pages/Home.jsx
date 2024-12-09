@@ -31,9 +31,11 @@ const Home = () => {
       console.error("userId no está definido o es inválido");
       return;
     }
+  
     try {
       const newIntervalId = await startInterval(userId);
       setIntervalId(newIntervalId);
+      loadIntervals(); // Refrescar los intervalos
     } catch (error) {
       console.error("Error al iniciar el intervalo", error);
     }
@@ -58,12 +60,11 @@ const Home = () => {
     try {
       await endInterval(intervalId);
       setIntervalId(null);
-      loadIntervals(); 
+      loadIntervals(); // Refrescar los intervalos
     } catch (error) {
       console.error("Error al finalizar el intervalo", error);
     }
   };
-
   // Cargar los intervalos de trabajo para el mes actual
   const loadIntervals = async () => {
     try {
@@ -83,13 +84,13 @@ const Home = () => {
    // Calcular las horas totales trabajadas para el mes
    const calculateTotalHours = (workDays) => {
     let total = 0;
-
+  
     workDays.forEach(workDay => {
       const intervals = workDay.intervalsList;
-
+  
       intervals.forEach(interval => {
         const { start_time, end_time } = interval;
-
+  
         if (start_time && end_time) {
           // Convertir start_time y end_time a objetos Date
           const startDate = convertTimeToDate(start_time);
@@ -98,15 +99,25 @@ const Home = () => {
           // Calcular la diferencia en milisegundos
           const durationInMillis = endDate - startDate;
           const durationInHours = durationInMillis / (1000 * 60 * 60); // Convertir a horas
-
+  
           total += durationInHours;
         }
       });
     });
-
+  
     setTotalHours(total); // Actualizar el total de horas
     console.log(`Total de horas trabajadas este mes: ${total.toFixed(2)} horas`);
   };
+  
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      loadIntervals();
+    }, 30000); // Actualiza cada 30 segundos, puedes ajustar el tiempo.
+  
+    // Limpiar el intervalo cuando el componente se desmonte
+    return () => clearInterval(intervalId);
+  }, [intervalId]);  // Deberías ajustar esta dependencia
+  
 
     // Obtener los días de trabajo y calcular las horas totales
     useEffect(() => {
