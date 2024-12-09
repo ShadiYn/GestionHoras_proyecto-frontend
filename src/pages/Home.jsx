@@ -2,18 +2,29 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from "../providers/UserProvider";
 import '../app/Home.css'; 
-import { endInterval, getUserIntervals, startInterval, getOrCreateCurrentWorkDay } from '../api/api';
+import { endInterval, getUserIntervals, startInterval, getWorkDaysForCurrentMonth, getTotalWorkedHoursForCurrentMonth } from '../api/api';
 
 const Home = () => {
   const { setUser } = useUserContext();
   const navigate = useNavigate();
   const { user } = useUserContext(); // Obtener el usuario desde el contexto
-  const [, setIntervals] = useState([]);
-  const [intervalId, setIntervalId] = useState(null); // ID del intervalo activo
-  const [totalHours, setTotalHours] = useState(0);
+  const [, setIntervals] = useState([]); 
+  const [intervalId, setIntervalId] = useState(null); 
+  const [totalHours, setTotalHours] = useState(0);  
   const userId = user?.id; // Si user es undefined, userId será undefined
-  const [, setWorkdayId] = useState(null);
+  const [workDays, setWorkDays] = useState([]); // Asegúrate de inicializar correctamente
 
+
+
+
+  // Función para convertir un tiempo de formato "HH:mm:ss.SSS" a objeto Date
+  const convertTimeToDate = (timeStr) => {
+    const [hours, minutes, seconds] = timeStr.split(":");
+    const [sec, milli] = seconds.split(".");
+    const date = new Date();
+    date.setHours(parseInt(hours), parseInt(minutes), parseInt(sec), parseInt(milli || 0));
+    return date;
+  };
   // Iniciar el intervalo de trabajo
   const handleStartInterval = async () => {
     if (!userId) {
@@ -28,12 +39,26 @@ const Home = () => {
     }
   };
 
+  // Llamar a la API para obtener las horas totales trabajadas al cargar el componente
+  useEffect(() => {
+    const fetchTotalHours = async () => {
+      try {
+        const hours = await getTotalWorkedHoursForCurrentMonth();
+        setTotalHours(hours); // Actualiza el estado solo si es necesario
+      } catch (error) {
+        console.error("Error al obtener las horas trabajadas:", error);
+      }
+    };
+
+    fetchTotalHours(); // Llamada al cargar el componente
+  }, []); 
+
   // Finalizar el intervalo de trabajo
   const handleEndInterval = async () => {
     try {
       await endInterval(intervalId);
       setIntervalId(null);
-      loadIntervals();  // Vuelve a cargar los intervalos después de finalizar
+      loadIntervals(); 
     } catch (error) {
       console.error("Error al finalizar el intervalo", error);
     }
@@ -42,76 +67,88 @@ const Home = () => {
   // Cargar los intervalos de trabajo para el mes actual
   const loadIntervals = async () => {
     try {
-      const currentMonth = new Date().getMonth() + 1;  // Mes actual (1-12)
-      const currentYear = new Date().getFullYear();  // Año actual
-
-      // Llamar a la API para obtener los intervalos de ese mes
+      const currentMonth = new Date().getMonth() + 1;  
+      const currentYear = new Date().getFullYear();  
       const userIntervals = await getUserIntervals(userId, currentYear, currentMonth);
       
-      // Filtrar y manejar la respuesta como un array
       const intervals = Array.isArray(userIntervals) ? userIntervals : [userIntervals];
-      
       setIntervals(intervals);
-      calculateTotalHours(intervals); // Calcula el total de horas para este mes
+      calculateTotalHours(intervals); 
     } catch (error) {
       console.error("Error al cargar los intervalos:", error);
     }
   };
 
   // Calcular las horas totales trabajadas para el mes
-  const calculateTotalHours = (intervals) => {
+   // Calcular las horas totales trabajadas para el mes
+   const calculateTotalHours = (workDays) => {
     let total = 0;
-    
-    // Recorre todos los intervalos
-    intervals.forEach(({ start_time, end_time }) => {
-      if (start_time && end_time) {
-        const [startHour, startMinute] = start_time.split(":").map(Number);
-        const [endHour, endMinute] = end_time.split(":").map(Number);
 
-        // Crear objetos Date para la hora de inicio y fin del intervalo
-        const currentDate = new Date();  // Usamos la fecha actual para no cambiar el día, solo hora y minutos
-        const start = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), startHour, startMinute);
-        const end = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), endHour, endMinute);
+    workDays.forEach(workDay => {
+      const intervals = workDay.intervalsList;
 
-        // Calcular la duración en horas
-        const duration = (end - start) / (1000 * 60 * 60); // Convertido en horas
-        total += duration; // Sumar la duración al total
-      }
+      intervals.forEach(interval => {
+        const { start_time, end_time } = interval;
+
+        if (start_time && end_time) {
+          // Convertir start_time y end_time a objetos Date
+          const startDate = convertTimeToDate(start_time);
+          const endDate = convertTimeToDate(end_time);
+          
+          // Calcular la diferencia en milisegundos
+          const durationInMillis = endDate - startDate;
+          const durationInHours = durationInMillis / (1000 * 60 * 60); // Convertir a horas
+
+          total += durationInHours;
+        }
+      });
     });
 
-    setTotalHours(total); // Establecer el total de horas en el estado
+    setTotalHours(total); // Actualizar el total de horas
+    console.log(`Total de horas trabajadas este mes: ${total.toFixed(2)} horas`);
   };
 
-  // Inicializar o obtener el WorkDay del usuario
-  useEffect(() => {
-    const initWorkDay = async () => {
+    // Obtener los días de trabajo y calcular las horas totales
+    useEffect(() => {
+      const loadWorkDays = async () => {
+        try {
+          const response = await getWorkDaysForCurrentMonth();
+          setWorkDays(response); 
+          calculateTotalHours(response); // Calcular las horas totales cuando los datos cambien
+        } catch (error) {
+          console.error('Error al cargar los WorkDays:', error);
+        }
+      };
+  
       if (userId) {
-        const workDay = await getOrCreateCurrentWorkDay();
-        setWorkdayId(workDay.id); // Establecer el ID del WorkDay
+        loadWorkDays();
+      }
+    }, [userId]);
+
+  // Función que obtiene los días de trabajo del mes actual
+  useEffect(() => {
+    const loadWorkDays = async () => {
+      try {
+        const response = await getWorkDaysForCurrentMonth();
+        setWorkDays(response); 
+        calculateTotalHours(response); 
+      } catch (error) {
+        console.error('Error al cargar los WorkDays:', error);
       }
     };
 
-    initWorkDay();
-  }, [userId]);
-
-  // Cargar los intervalos cuando el usuario cambia
-  useEffect(() => {
     if (userId) {
-      loadIntervals();
+      loadWorkDays();
     }
-  }, [userId]);
+  }, [userId]); 
 
-  // Navegar al calendario
-  const handleCalendar = () => {
-    navigate("/calendar");
-  };
+  // Verifica si los datos de WorkDays están siendo correctamente actualizados
+  useEffect(() => {
+    if (workDays.length > 0) {
+      calculateTotalHours(workDays);
+    }
+  }, [workDays]); 
 
-  // Navegar al perfil
-  const handlePerfil = () => {
-    navigate("/Perfil");
-  };
-
-  // Cerrar sesión
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setUser(null);
@@ -123,8 +160,8 @@ const Home = () => {
       {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-links">
-          <button className="nav-btn" onClick={handleCalendar}>Calendario</button>
-          <button className="nav-btn" onClick={handlePerfil}>Perfil</button>
+          <button className="nav-btn" onClick={() => navigate("/calendar")}>Calendario</button>
+          <button className="nav-btn" onClick={() => navigate("/Perfil")}>Perfil</button>
           <button className="nav-btn logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>
@@ -139,7 +176,7 @@ const Home = () => {
       <div className="info-cards">
         <div className="card">
           <h3>Horas del mes</h3>
-          <p>{totalHours.toFixed(2)} horas trabajadas hasta ahora</p>
+          <p>{totalHours.toFixed(2)} horas</p>
         </div>
         <div className="card">
           <h3>Ausencias</h3>
