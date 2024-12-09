@@ -1,15 +1,16 @@
-import { useState } from "react";
+import  { useState } from "react";
 import { registro } from "../api/api";
+import "../app/Auth.css"; // Estilos compartidos
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
-  const [isFlexible, setIsFlexible] = useState(false);
-  const [eurosPerHour, setEurosPerHour] = useState("");  // Debe ser un string primero
-  const [eurosPerExtraHours, setEurosPerExtraHours] = useState("");  // Agregado este campo
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isFlexible, setIsFlexible] = useState(false);
+  const [eurosPerHour, setEurosPerHour] = useState("");
+  const [eurosPerExtraHours, setEurosPerExtraHours] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -23,30 +24,25 @@ const Register = () => {
       return;
     }
 
-    // Convertir eurosPerHour y eurosPerExtraHours a float
     const eurosPerHourFloat = parseFloat(eurosPerHour);
     const eurosPerExtraHoursFloat = parseFloat(eurosPerExtraHours);
 
-    // Verificar que los valores sean números válidos
     if (isNaN(eurosPerHourFloat) || isNaN(eurosPerExtraHoursFloat)) {
       setError("Los valores de salario deben ser números válidos.");
       return;
     }
 
     try {
-      const userData = {
+      await registro({
         username,
         name,
         lastName,
         password,
-        eurosPerHour: eurosPerHourFloat,  // Pasamos el valor como número
-        eurosPerExtraHours: eurosPerExtraHoursFloat,  // Incluido el nuevo campo
+        eurosPerHour: eurosPerHourFloat,
+        eurosPerExtraHours: eurosPerExtraHoursFloat,
         isFlexible,
-      };
-      
-      const response = await registro(userData);
+      });
       setSuccessMessage("Registro exitoso. Puedes iniciar sesión.");
-      console.log(response.data);
     } catch (err) {
       setError(
         err.response
@@ -57,9 +53,9 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h2>Registro</h2>
-      <form onSubmit={handleRegister}>
+    <div className="auth-container">
+      <h2 className="auth-header">Registro</h2>
+      <form className="auth-form" onSubmit={handleRegister}>
         <div>
           <label>Username:</label>
           <input
@@ -140,17 +136,15 @@ const Register = () => {
           />
         </div>
         <div>
-          <label>Extra Hours Salary/h:</label> {/* Nuevo campo de salario extra */}
+          <label>Extra Hours Salary/h:</label>
           <input
             type="text"
             value={eurosPerExtraHours}
             onChange={(e) => setEurosPerExtraHours(e.target.value)}
           />
         </div>
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-
+        {error && <p className="auth-error">{error}</p>}
+        {successMessage && <p className="auth-success">{successMessage}</p>}
         <button type="submit">Registrar</button>
       </form>
     </div>

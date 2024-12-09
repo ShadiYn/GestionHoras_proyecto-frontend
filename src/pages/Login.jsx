@@ -1,51 +1,45 @@
-// Login.jsx
-import { useState } from "react";
+import React, { useState } from "react";
 import { loginUser } from "../api/api";
-import { useNavigate } from "react-router-dom"; // Usamos el hook de navegación
-import { useUserContext } from "../providers/UserProvider"; // Accedemos al contexto de usuario
+import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../providers/UserProvider";
+import "../app/Auth.css"; // Estilos compartidos
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { setUser } = useUserContext(); // Accedemos a setUser para actualizar el contexto
+  const { setUser } = useUserContext();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Limpiar errores previos
-  
+    setError("");
+
     try {
-      const credentials = { username, password };
-      const result = await loginUser(credentials);
+      const result = await loginUser({ username, password });
       if (result) {
-        // Asegúrate de que el resultado contiene un campo id
         setUser({
           token: result.token,
-          id: result.id,  // Verifica que el 'id' esté en la respuesta
+          id: result.id,
           username: result.username,
           name: result.name,
           lastname: result.lastName,
           salary: result.eurosPerHour,
           schedule: result.isFlexible,
         });
-        // Redirigimos a la página de Home
         navigate("/home");
       }
     } catch (err) {
-      setError("Credenciales incorrectas. Intenta de nuevo.",err);
+      setError("Credenciales incorrectas. Intenta de nuevo.");
     }
   };
-  
 
-  const handleRegister = () => {
-    navigate("/register");
-  };
+  const handleRegister = () => navigate("/register");
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+    <div className="auth-container">
+      <h2 className="auth-header">Login</h2>
+      <form className="auth-form" onSubmit={handleLogin}>
         <div>
           <label>Username:</label>
           <input
@@ -64,14 +58,15 @@ const Login = () => {
             required
           />
         </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p className="auth-error">{error}</p>}
         <button type="submit">Login</button>
-        <br />
-        {!localStorage.getItem("authToken") && (
-          <button type="button" onClick={handleRegister}>
-            Register
-          </button>
-        )}
+        <button
+          type="button"
+          className="secondary-button"
+          onClick={handleRegister}
+        >
+          Register
+        </button>
       </form>
     </div>
   );
