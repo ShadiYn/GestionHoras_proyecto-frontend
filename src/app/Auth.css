@@ -1,0 +1,75 @@
+.auth-container {
+    font-family: Arial, sans-serif;
+    padding: 50px; /* Aumentar espacio interno */
+    size: 100px;
+    max-width: 900px; /* Aumentar el ancho máximo */
+    margin:auto;
+    background-color: #aa3c3c00;
+    border-radius: 8px;
+  /* Más profundidad */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .auth-header {
+    text-align: center;
+    color: #007bff;
+    font-size: 24px; /* Hacer el título más destacado */
+    margin-bottom: 30px; /* Más espacio debajo del título */
+  }
+  
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Más espacio entre los elementos */
+  }
+  
+  .auth-form label {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .auth-form input {
+    padding: 15px; /* Más altura en los campos */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .auth-form button {
+    padding: 15px; /* Botones más grandes */
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 18px; /* Texto más grande */
+    transition: background-color 0.3s;
+  }
+  
+  .auth-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .auth-form .secondary-button {
+    background-color: #28a745;
+  }
+  
+  .auth-form .secondary-button:hover {
+    background-color: #218838;
+  }
+  
+  .auth-error {
+    color: #dc3545;
+    font-size: 16px; /* Texto de error más visible */
+    text-align: center;
+  }
+  
+  .auth-success {
+    color: #28a745;
+    font-size: 16px; /* Texto de éxito más visible */
+    text-align: center;
+  }
+  
