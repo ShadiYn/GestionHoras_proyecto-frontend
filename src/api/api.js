@@ -12,8 +12,6 @@ export const loginUser = async ({ username, password }) => {
   // Log para ver el token generado
   console.log("Generando token para login:", token);
   localStorage.setItem("authToken", token);
-  const token = btoa(`${username}:${password}`);
-  localStorage.setItem("authToken", token);
 
   try {
     // Log para verificar los datos enviados
