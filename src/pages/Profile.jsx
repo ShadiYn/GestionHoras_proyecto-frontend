@@ -14,7 +14,7 @@ const Profile = () => {
   const [modalTitle, setModalTitle] = useState("");
   const [modalPassword, setModalPassword] = useState("");
   const [passwordData, setPasswordData] = useState({
-    newPassword: "",
+    password: "",
     confirmPassword: "",
   });
 
@@ -22,6 +22,7 @@ const Profile = () => {
     const fetchUserDetails = async () => {
       try {
         const token = localStorage.getItem("authToken");
+        console.log("Token:", token);
         if (token) {
           const userData = await userDetails(token);
           setUserInfo(userData);
@@ -73,19 +74,20 @@ const Profile = () => {
   };
 
   const handlePasswordSubmit = async () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
+    if (passwordData.password !== passwordData.confirmPassword) {
       setModalMessage("Las contraseñas nuevas no coinciden.");
       return;
     }
 
     try {
       const payload = {
-        newPassword: passwordData.newPassword,
+        username: userInfo.username, // Asegúrate de incluir el username
+        password: passwordData.password,
       };
 
       const response = await updatePassword(payload); // Llamada al backend
       if (response) {
-        setShowPasswordModal(false); // Cierra el modal
+        setModalPassword(false); // Cierra el modal
         setModalMessage("Contraseña actualizada correctamente."); // Mensaje de éxito
       } else {
         setModalMessage("Error al actualizar la contraseña.");
@@ -95,10 +97,17 @@ const Profile = () => {
       console.error(error);
     }
   };
+
   const handleEdit = async () => {
     try {
-      await updateUserDetails(formData, userInfo.id); // Envía los datos actualizados al backend
-      setUserInfo(formData); // Actualiza el estado local con los datos editados
+      const payload = {
+        ...formData,
+        username: formData.username || userInfo.username, // Asegúrate de incluir el username
+        password: formData.password || userInfo.password, // Asegúrate de incluir la password si es necesario
+      };
+
+      const response = await updateUserDetails(payload); // Envía los datos actualizados al backend
+      setUserInfo({ ...userInfo, ...formData }); // Actualiza el estado local con los datos editados
       setIsEditing(false); // Sal del modo de edición
       setModalTitle("Success");
       setModalMessage("User updated succesfully.");
@@ -234,7 +243,9 @@ const Profile = () => {
             </button>
           </div>
         ) : (
-          <button onClick={() => setIsEditing(true)}>Edit Profile</button>
+          <button onClick={() => setIsEditing(true)} class="button-group">
+            Edit Profile
+          </button>
         )}
         <Modal
           show={modal}
@@ -259,8 +270,8 @@ const Profile = () => {
                 <label>New Password:</label>
                 <input
                   type="password"
-                  name="newPassword"
-                  value={passwordData.newPassword}
+                  name="password"
+                  value={passwordData.password}
                   onChange={handlePasswordChange}
                   required
                 />

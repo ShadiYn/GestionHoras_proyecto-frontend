@@ -212,3 +212,10 @@
         .cancel-button:hover {
           background-color: #c82333;
         }
+
+                .button-group {
+                  display: flex;
+                  margin-bottom: 5px;
+                  /* Espacio entre los botones */
+                }
+        

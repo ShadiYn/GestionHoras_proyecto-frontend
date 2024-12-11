@@ -1,4 +1,5 @@
-import  { useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { registro } from "../api/api";
 import "../app/Auth.css"; // Estilos compartidos
 
@@ -12,6 +13,7 @@ const Register = () => {
   const [eurosPerHour, setEurosPerHour] = useState("");
   const [eurosPerExtraHours, setEurosPerExtraHours] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleRegister = async (e) => {
@@ -43,6 +45,7 @@ const Register = () => {
         isFlexible,
       });
       setSuccessMessage("Registro exitoso. Puedes iniciar sesión.");
+      navigate("/login"); // Redirect to login page after successful registration
     } catch (err) {
       setError(
         err.response
@@ -50,6 +53,10 @@ const Register = () => {
           : "Error al registrar el usuario. Intenta de nuevo."
       );
     }
+  };
+
+  const handleLogin = async () => {
+    navigate("/login");
   };
 
   return (
@@ -146,6 +153,9 @@ const Register = () => {
         {error && <p className="auth-error">{error}</p>}
         {successMessage && <p className="auth-success">{successMessage}</p>}
         <button type="submit">Registrar</button>
+        <button type="button" onClick={handleLogin}>
+          Login
+        </button>
       </form>
     </div>
   );

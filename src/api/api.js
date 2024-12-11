@@ -78,8 +78,6 @@ export const loginUser = async ({ username, password }) => {
 const setAuth = async (token) => {
   console.log("Configurando autorización con token:", token);
   baseUrl.defaults.headers.common.Authorization = `Basic ${token}`;
-  console.log("Configurando autorización con token:", token);
-  baseUrl.defaults.headers.common["Authorization"] = `Basic ${token}`;
 };
 
 // Función de registro de usuario
@@ -100,7 +98,19 @@ export const registro = async (userData) => {
 
 export const userDetails = async () => {
   try {
-    const response = await baseUrl.get("/usersettings");
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      throw new Error(
+        "No se encontró un token de autenticación. Inicia sesión nuevamente."
+      );
+    }
+
+    const response = await baseUrl.get("/usersettings", {
+      headers: {
+        Authorization: `Basic ${token}`,
+      },
+    });
+
     return response.data; // Axios devuelve la respuesta directamente como JSON
   } catch (error) {
     if (error.response && error.response.status === 401) {
@@ -284,6 +294,54 @@ export const getUserIntervals = async (userId) => {
     return response.data;
   } catch (error) {
     console.error("No se han obtenido los intervalos:", error.message);
+    throw error;
+  }
+};
+
+export const updatePassword = async (payload) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const decodeToken = atob(token);
+    const [username, password] = decodeToken.split(":");
+    const newPassword = payload.password;
+    const newToken = btoa(username + ":" + newPassword);
+    localStorage.setItem("authToken", newToken);
+
+    const response = await baseUrl.put("/usersettings/updatepassword", payload);
+
+    setAuth(newToken);
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar la contraseña:", error.message);
+    throw error;
+  }
+};
+
+export const updateUserDetails = async (obj) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const decodedToken = atob(token);
+    const [username, password] = decodedToken.split(":");
+
+    console.log("Username decodificado:", username);
+    console.log("Password decodificado:", password);
+    console.log("Objeto a actualizar:", obj.username);
+
+    const newUsername = obj.username;
+
+    const newToken = btoa(newUsername + ":" + password);
+    console.log("Nuevo token generado para actualizar:", newToken);
+    localStorage.setItem("authToken", newToken);
+
+    const response = await baseUrl.put("/usersettings/updateuser", obj);
+    setAuth(newToken); // Configurar el nuevo token en axios
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error al actualizar los detalles del usuario:",
+      error.message
+    );
     throw error;
   }
 };
