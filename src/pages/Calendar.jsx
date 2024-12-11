@@ -1,14 +1,41 @@
-const Calendar = ()=>{
-    return(
-        <>
-        <p>Calendario en grande mostrando todos los dias trabajados y los que ha faltado/tenia festivo con todas las horas que se han hecho</p>
+import React from "react";
+import "./Calendar.css";
+import { useNavigate } from "react-router-dom";
 
-        <p>Tambien digo yo, habra un boton para añadir un horario a X dia que se diga y de ahi te salga un popup al pasar el ratón diciendo: horas realzadas etc...</p>
-        <p>
-        el calendario estara a la derecha y a la izquierda al lado de cada semana habrá una targeta mostrando: horas totales ssemanales a realizar: 15
-        horas trabajadas/realizadas: 23
-        horas extra: 8</p>
-        </>
-    )
-}
+const Calendar = () => {
+  const daysInMonth = new Date().getDate();
+  const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const navigate = useNavigate();
+
+  const handleHomeButton = () => {
+    navigate("/home");
+  };
+
+  const handleProfileButton = () => {
+    navigate("/perfil");
+  };
+  return (
+    <>
+      <div>
+        <nav className="navbar">
+          <div className="navbar-links">
+            <button className="nav-btn" onClick={handleHomeButton}>
+              Home
+            </button>
+            <button className="nav-btn" onClick={handleProfileButton}>
+              Profile
+            </button>
+          </div>
+        </nav>
+      </div>
+      <div className="calendar-container">
+        {daysArray.map((day) => (
+          <div key={day} className="calendar-day">
+            {day}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
 export default Calendar;

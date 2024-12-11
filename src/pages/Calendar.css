@@ -1,0 +1,15 @@
+
+.calendar-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 10px;
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.calendar-day {
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+}
