@@ -10,7 +10,7 @@
     background-color: #007bff;
     padding: 10px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; 
     align-items: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
@@ -37,6 +37,7 @@
   
   .logout-btn {
     background-color: #dc3545;
+    color: white;
   }
   
   .logout-btn:hover {
@@ -119,3 +120,95 @@
     color: #555;
   }
   
+  .welcome {
+
+    font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    margin-left: auto;
+  }
+
+    /* Contenedor principal */
+    .user-info-container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      font-family: Arial, sans-serif;
+    }
+  
+    /* Títulos y texto */
+    .user-info-container div {
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #333333;
+    }
+  
+    .user-info-container label {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+  
+    .user-info-container input[type="text"],
+    .user-info-container input[type="number"] {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 100%;
+      max-width: 300px;
+      box-sizing: border-box;
+    }
+  
+    /* Botones */
+    .user-info-container button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  
+    .user-info-container button:hover {
+      background-color: #0056b3;
+    }
+  
+    /* Checkbox */
+    .user-info-container input[type="checkbox"] {
+      margin-left: 5px;
+    }
+  
+    .user-info-container label input[type="checkbox"] {
+      margin-left: 5px;
+    }
+  
+    /* Flexibilidad del diseño */
+    .schedule-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  
+    .schedule-container label {
+      display: flex;
+      align-items: center;
+    }
+
+        .cancel-button {
+          padding: 10px 15px;
+          border: none;
+          border-radius: 4px;
+          background-color: #dc3545;
+          color: #ffffff;
+          cursor: pointer;
+          font-size: 14px;
+          margin-left: 10px;
+        }
+    
+        .cancel-button:hover {
+          background-color: #c82333;
+        }
