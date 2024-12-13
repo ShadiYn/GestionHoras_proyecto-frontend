@@ -50,28 +50,6 @@ export const loginUser = async ({ username, password }) => {
     );
     throw error; // Lanzar el error para que pueda ser manejado en el componente
   }
-  try {
-    const response = await baseUrl.post(
-      "/login",
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${token}`,
-        },
-      }
-    );
-
-    if (!response.data.id || isNaN(Number(response.data.id))) {
-      throw new Error("La respuesta del servidor no contiene un ID válido");
-    }
-
-    setAuth(token); // Configurar token
-    return response.data; // Retorna la respuesta
-  } catch (error) {
-    console.error("Error al hacer login:", error.message);
-    throw error;
-  }
 };
 
 // Configurar el token de autenticación en axios
@@ -137,7 +115,7 @@ export const getOrCreateCurrentWorkDay = async () => {
 //check-in
 export const handleCheckIn = async (intervalId) => {
   try {
-    await axios.get(`/intervals/start/${intervalId}`);
+    await baseUrl.get(`/intervals/start/${intervalId}`);
     alert("Check-in registrado!");
   } catch (error) {
     console.error("Error al registrar el check-in:", error);
@@ -147,7 +125,7 @@ export const handleCheckIn = async (intervalId) => {
 //check out
 export const handleCheckOut = async (intervalId) => {
   try {
-    await axios.get(`/intervals/end/${intervalId}`);
+    await baseUrl.get(`/intervals/end/${intervalId}`);
     alert("Check-out registrado!");
   } catch (error) {
     console.error("Error al registrar el check-out:", error);
@@ -167,7 +145,7 @@ export const startInterval = async (intervalId) => {
     }
 
     // Configurar encabezados con el token
-    const response = await axios.get(
+    const response = await baseUrl.get(
       `http://localhost:8080/intervals/start/${intervalId}`,
       {
         headers: {
@@ -184,7 +162,6 @@ export const startInterval = async (intervalId) => {
   }
 };
 
-// Función para obtener y calcular las horas trabajadas en el mes actual
 // Función para obtener y calcular el total de horas trabajadas en el mes actual
 export const getTotalWorkedHoursForCurrentMonth = async () => {
   try {
@@ -254,26 +231,6 @@ export const getWorkDaysForCurrentMonth = async () => {
   }
 };
 
-export const createAutoWorkday = async () => {
-  try {
-    const token = localStorage.getItem("authToken");
-    console.log(token);
-    const response = await baseUrl.post("/workdays/checkandcreateautoworkday", {
-      headers: {
-        Authorization: `Basic ${token}`, // Añadir el token al encabezado de la solicitud
-      },
-    });
-    return response;
-  } catch (error) {
-    if (error.response) {
-      console.error("Error en la respuesta del servidor:", error.response.data);
-    } else {
-      console.error("Error en la solicitud:", error.message);
-    }
-    throw error;
-  }
-};
-
 //funcion para finalizar el intervalo
 export const endInterval = async (intervalId) => {
   try {
@@ -292,7 +249,7 @@ export const getIntervalsForMonth = async (userId) => {
       throw new Error("User ID debe ser un número válido");
     }
 
-    const response = await axios.get(`/intervals/month/${userId}`);
+    const response = await baseUrl.get(`/intervals/month/${userId}`);
     console.log(response.data); // Manejar los intervalos obtenidos
     return response.data;
   } catch (error) {
@@ -314,6 +271,15 @@ export const getUserIntervals = async (userId) => {
     return response.data;
   } catch (error) {
     console.error("No se han obtenido los intervalos:", error.message);
+    throw error;
+  }
+};
+export const getCurrentInterval = async () => {
+  try {
+    const response = await baseUrl.get("/intervals/currentinterval");
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el ultimo intervalo", error.message);
     throw error;
   }
 };
@@ -342,15 +308,9 @@ export const updateUserDetails = async (obj) => {
     const token = localStorage.getItem("authToken");
     const decodedToken = atob(token);
     const [username, password] = decodedToken.split(":");
-
-    console.log("Username decodificado:", username);
-    console.log("Password decodificado:", password);
-    console.log("Objeto a actualizar:", obj.username);
-
     const newUsername = obj.username;
-
     const newToken = btoa(newUsername + ":" + password);
-    console.log("Nuevo token generado para actualizar:", newToken);
+
     localStorage.setItem("authToken", newToken);
 
     const response = await baseUrl.put("/usersettings/updateuser", obj);
@@ -387,7 +347,6 @@ export const createWorkDayWithFirstInterval = async () => {
       }
     );
 
-    console.log("WorkDay y primer intervalo creados:", response.data);
     return response.data;
   } catch (error) {
     console.error(

@@ -2,14 +2,17 @@ import React from "react";
 import "./Calendar.css";
 import { useNavigate } from "react-router-dom";
 import {
-  userDetails,
   createWorkDayWithFirstInterval,
   getWorkDaysForCurrentMonth,
+  getCurrentInterval,
+  handleCheckOut,
 } from "../api/api";
 import { useState, useEffect } from "react";
 
 const Calendar = () => {
   const navigate = useNavigate();
+  const [workDays, setWorkDays] = useState([]);
+  const [interval, setIntervals] = useState(null);
 
   const handleHomeButton = () => {
     navigate("/home");
@@ -19,39 +22,37 @@ const Calendar = () => {
     navigate("/perfil");
   };
 
-  const [workDays, setWorkDays] = useState([]);
+  const getWorkDays = async () => {
+    try {
+      const data = await getWorkDaysForCurrentMonth();
+      setWorkDays(data);
+    } catch (error) {
+      console.error("Error getting workdays:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchWorkDays = async () => {
-      try {
-        const data = await getWorkDaysForCurrentMonth();
-        setWorkDays(data);
-      } catch (error) {
-        console.error("Error fetching workdays:", error);
-      }
-    };
-
-    fetchWorkDays();
+    getWorkDays();
   }, []);
 
   const handleCreateWorkDay = async () => {
     try {
-      const newWorkDay = await createWorkDayWithFirstInterval();
-      setWorkDays([...workDays, newWorkDay]);
+      await createWorkDayWithFirstInterval();
+      const interval = await getCurrentInterval();
+      console.log("Last interval:", interval);
+      setIntervals(interval);
+      getWorkDays();
     } catch (error) {
       console.error("Error creating workday:", error);
     }
   };
-  const createAutoWorkdayCalendar = async () => {
+
+  const checkOut = async (intervalId) => {
     try {
-      const user = await userDetails();
-      const flexible = user.flexible;
-      if (!flexible) {
-        const response = await createWorkDayWithFirstInterval();
-        return response;
-      }
+      const endInterval = await handleCheckOut(intervalId);
+      console.log("End interval:", endInterval);
     } catch (error) {
-      console.error("Workday creation error", error);
+      console.error("Error checking out:", error);
     }
   };
 
@@ -70,23 +71,35 @@ const Calendar = () => {
         </nav>
       </div>
       <div>
-        <h1>Calendar</h1>
-        <button onClick={createAutoWorkdayCalendar}>Create Auto Workday</button>
-
         <button onClick={handleCreateWorkDay}>Check In</button>
         <div className="workday-cards">
-          {workDays.map((workDay) => (
-            <div key={workDay.id} className="workday-card">
-              <h3>WorkDay: {workDay.day}</h3>
-              <ul>
-                {workDay.intervals.map((interval) => (
-                  <li key={interval.id}>
-                    Start: {interval.startTime}, End: {interval.endTime}
+          {workDays && workDays.length > 0 ? (
+            workDays.map((workDay) => (
+              <div key={workDay.id} className="workday-card">
+                <h3>WorkDay: {workDay.day}</h3>
+                <ul>
+                  <li>
+                    {interval && (
+                      <div className="interval-card">
+                        <h3>Intervals</h3>
+                        <p>Start: {interval.start_time}</p>
+                        <p>End: {interval.end_time}</p>
+                      </div>
+                    )}
                   </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+                </ul>
+                <button
+                  onClick={() => {
+                    handleCheckOut(interval.id);
+                  }}
+                >
+                  Check Out
+                </button>
+              </div>
+            ))
+          ) : (
+            <p>No workdays available.</p>
+          )}
         </div>
       </div>
     </>
