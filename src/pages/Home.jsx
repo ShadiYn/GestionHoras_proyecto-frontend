@@ -2,44 +2,166 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from "../providers/UserProvider";
 import '../app/Home.css'; 
-import { endInterval, getUserIntervals, startInterval, getWorkDaysForCurrentMonth, getTotalWorkedHoursForCurrentMonth } from '../api/api';
+import { getUserIntervals, getWorkDaysForCurrentMonth, getTotalWorkedHoursForCurrentMonth, checkAndCreateAutoWorkday, functionCheckOut, getAllIntervals, getCurrentInterval } from '../api/api';
 
 const Home = () => {
   const { setUser } = useUserContext();
   const navigate = useNavigate();
-  const { user } = useUserContext(); // Obtener el usuario desde el contexto
-  const [, setIntervals] = useState([]); 
-  const [intervalId, setIntervalId] = useState(null); 
+  const { user } = useUserContext();
+  const [intervals, setIntervals] = useState([]); 
+  const [intervalId, setIntervalId] = useState(null);
   const [totalHours, setTotalHours] = useState(0);  
-  const userId = user?.id; // Si user es undefined, userId será undefined
-  const [workDays, setWorkDays] = useState([]); // Asegúrate de inicializar correctamente
+  const userId = user?.id;
+  const [error, setError] = useState(null);
+  const [, setWorkDays] = useState([]);  
+  const [statusMessage, setStatusMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true); 
 
-
-
-
-  // Función para convertir un tiempo de formato "HH:mm:ss.SSS" a objeto Date
-  const convertTimeToDate = (timeStr) => {
-    const [hours, minutes, seconds] = timeStr.split(":");
-    const [sec, milli] = seconds.split(".");
-    const date = new Date();
-    date.setHours(parseInt(hours), parseInt(minutes), parseInt(sec), parseInt(milli || 0));
-    return date;
+  const handleCheckAndCreate = async () => {
+    try {
+      const response = await checkAndCreateAutoWorkday();
+      if (response.status === 201) {
+        setStatusMessage(response.data);
+        console.log("Operación exitosa:", response.data);
+      }
+    } catch (error) {
+      if (error.response?.status === 400) {
+        setStatusMessage(error.response.data);
+      } else {
+        setStatusMessage("Error inesperado al procesar la solicitud.");
+      }
+      console.error("Error en el manejo de la operación:", error.response?.data || error.message);
+    }
   };
-  // Iniciar el intervalo de trabajo
-  const handleStartInterval = async () => {
-    if (!userId) {
-      console.error("userId no está definido o es inválido");
-      return;
+
+  const handleCheckOut = async () => {
+    try {
+      const interval = await getCurrentInterval();
+      console.log("Interval obtenido:", interval); 
+      
+      if (!interval || !interval.id) {
+        console.error("No se encontró un intervalo válido.");
+        return;
+      }
+  
+      await functionCheckOut(interval.id); 
+  
+      await loadIntervals();  
+      alert("Check-out registrado correctamente!");
+    } catch (error) {
+      console.error("Error al registrar el check-out:", error);
+      alert("Tienes que hacer check-in para poder realizar el check-out");
+    }
+  };
+  
+  
+  const convertTimeToDate = (timeStr) => {
+    if (!timeStr || typeof timeStr !== 'string') {
+        console.warn("Invalid time string received:", timeStr);
+        return new Date(0); // Devuelve una fecha por defecto o maneja el error según el caso
+    }
+
+    const [hours, minutes, seconds] = timeStr.split(":");
+    const [sec, milli] = seconds ? seconds.split(".") : [0, 0]; // Maneja casos donde `seconds` puede ser undefined
+    const date = new Date();
+    date.setHours(parseInt(hours, 10), parseInt(minutes, 10), parseInt(sec, 10), parseInt(milli || 0, 10));
+    return date;
+};
+
+
+useEffect(() => {
+  const fetchCurrentInterval = async () => {
+    setIsLoading(true);
+    try {
+      const interval = await getCurrentInterval();
+      console.log('Respuesta completa de getCurrentInterval:', interval);  // Ver toda la respuesta
+      
+      if (interval && interval.id) {
+        setIntervalId(interval.id);
+      } else {
+        console.warn("No se encontró un intervalo válido.");
+        setIntervalId(null);
+      }
+    } catch (error) {
+      console.error('Error al obtener el intervalo actual:', error);
+      setIntervalId(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  fetchCurrentInterval();
+  
+}, []); 
+
+
+useEffect(() => {
+  if (!isLoading && intervalId) {
+    loadIntervals(); 
+  }
+}, [isLoading, intervalId]); 
+
+  
+  
+  
+  
+  // Solo cargar los intervalos si no estamos en estado de carga
+  useEffect(() => {
+    if (!isLoading && intervalId) {
+      loadIntervals(); // Cargar los intervalos solo cuando el intervalId esté disponible
+    }
+  }, [isLoading, intervalId]); // Dependencias para que se ejecute cuando intervalId esté disponible
+  
+  useEffect(() => {
+    // Este useEffect solo se ejecuta cuando intervalId está disponible
+    if (intervalId) {
+      loadIntervals();
+    }
+  }, [intervalId]);  // Solo se ejecuta cuando intervalId cambia
+  
+
+
+  // Cargar intervalos de usuario
+  const loadIntervals = async () => {
+    if (!intervalId || isNaN(intervalId)) {
+      console.error("Interval ID no es válido:", intervalId);
+      setError("Interval ID no definido o no es válido.");
+      return;  
     }
   
     try {
-      const newIntervalId = await startInterval(userId);
-      setIntervalId(newIntervalId);
-      loadIntervals(); // Refrescar los intervalos
+      const response = await getUserIntervals(intervalId);
+      console.log("Respuesta de getUserIntervals:", response);
+      
+      if (!response || !response.intervalsList) {
+        console.error("La respuesta no contiene intervalos válidos");
+        setError("No se pudieron cargar los intervalos.");
+        return;
+      }
+  
+      let userIntervals = response.intervalsList || [];
+      if (userIntervals.length === 0) {
+        userIntervals = await getAllIntervals(); // Si no hay intervalos, obtenemos todos los intervalos
+      }
+  
+      setIntervals(userIntervals);
     } catch (error) {
-      console.error("Error al iniciar el intervalo", error);
+      console.error("Error al cargar los intervalos:", error);
+      setError("Error al obtener los intervalos.");
     }
   };
+  
+
+  
+  
+
+  // Efecto para cargar intervalos si intervalId está disponible y no está en carga
+  useEffect(() => {
+    if (intervalId && !isLoading) {
+      loadIntervals();
+    } else {
+      console.warn("Interval ID aún no está disponible o está en carga.");
+    }
+  }, [intervalId, isLoading]); // Se ejecuta solo cuando intervalId cambia o la carga de intervalId termina
 
   // Llamar a la API para obtener las horas totales trabajadas al cargar el componente
   useEffect(() => {
@@ -53,112 +175,81 @@ const Home = () => {
     };
 
     fetchTotalHours(); // Llamada al cargar el componente
-  }, []); 
+  }, []); // Se ejecuta solo una vez cuando el componente se monta
 
-  // Finalizar el intervalo de trabajo
-  const handleEndInterval = async () => {
-    try {
-      await endInterval(intervalId);
-      setIntervalId(null);
-      loadIntervals(); // Refrescar los intervalos
-    } catch (error) {
-      console.error("Error al finalizar el intervalo", error);
-    }
-  };
-  // Cargar los intervalos de trabajo para el mes actual
-  const loadIntervals = async () => {
-    try {
-      const currentMonth = new Date().getMonth() + 1;  
-      const currentYear = new Date().getFullYear();  
-      const userIntervals = await getUserIntervals(userId, currentYear, currentMonth);
-      
-      const intervals = Array.isArray(userIntervals) ? userIntervals : [userIntervals];
-      setIntervals(intervals);
-      calculateTotalHours(intervals); 
-    } catch (error) {
-      console.error("Error al cargar los intervalos:", error);
-    }
-  };
-
-  // Calcular las horas totales trabajadas para el mes
-   // Calcular las horas totales trabajadas para el mes
-   const calculateTotalHours = (workDays) => {
-    let total = 0;
-  
-    workDays.forEach(workDay => {
-      const intervals = workDay.intervalsList;
-  
-      intervals.forEach(interval => {
-        const { start_time, end_time } = interval;
-  
-        if (start_time && end_time) {
-          // Convertir start_time y end_time a objetos Date
-          const startDate = convertTimeToDate(start_time);
-          const endDate = convertTimeToDate(end_time);
-          
-          // Calcular la diferencia en milisegundos
-          const durationInMillis = endDate - startDate;
-          const durationInHours = durationInMillis / (1000 * 60 * 60); // Convertir a horas
-  
-          total += durationInHours;
-        }
-      });
-    });
-  
-    setTotalHours(total); // Actualizar el total de horas
-    console.log(`Total de horas trabajadas este mes: ${total.toFixed(2)} horas`);
-  };
-  
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      loadIntervals();
-    }, 30000); // Actualiza cada 30 segundos, puedes ajustar el tiempo.
-  
-    // Limpiar el intervalo cuando el componente se desmonte
-    return () => clearInterval(intervalId);
-  }, [intervalId]);  // Deberías ajustar esta dependencia
-  
-
-    // Obtener los días de trabajo y calcular las horas totales
-    useEffect(() => {
-      const loadWorkDays = async () => {
-        try {
-          const response = await getWorkDaysForCurrentMonth();
-          setWorkDays(response); 
-          calculateTotalHours(response); // Calcular las horas totales cuando los datos cambien
-        } catch (error) {
-          console.error('Error al cargar los WorkDays:', error);
-        }
-      };
-  
-      if (userId) {
-        loadWorkDays();
-      }
-    }, [userId]);
-
-  // Función que obtiene los días de trabajo del mes actual
   useEffect(() => {
     const loadWorkDays = async () => {
       try {
         const response = await getWorkDaysForCurrentMonth();
-        setWorkDays(response); 
-        calculateTotalHours(response); 
+        console.log("Respuesta de la API de WorkDays:", response);
+        
+        // Verificar que la respuesta sea un array con datos
+        if (Array.isArray(response) && response.length > 0) {
+          setWorkDays(response);  // Establecer el estado correctamente
+          calculateTotalHours(response);  // Calcular las horas totales
+        } else {
+          console.warn("La respuesta no contiene datos de WorkDays o está vacía:", response);
+          setWorkDays([]);  // Si no hay datos, establecer un arreglo vacío
+        }
       } catch (error) {
-        console.error('Error al cargar los WorkDays:', error);
+        console.error("Error al cargar los WorkDays:", error);
       }
     };
-
+  
     if (userId) {
-      loadWorkDays();
+      loadWorkDays();  // Llamada para cargar los workdays cuando el userId esté disponible
     }
-  }, [userId]); 
+  }, [userId]);  // Dependencia: se ejecuta cuando `userId` cambia // Ejecutar cuando el userId cambie
+  
+  
+  // Función para calcular la duración en horas, valida si las fechas son correctas
+  const duration = (start, end) => {
+    console.log("Start:", start, "End:", end);  // Verifica los valores de las fechas
+    if (start && end && !isNaN(start) && !isNaN(end)) {
+      if (end >= start) {
+        return (end - start) / 1000 / 60 / 60;  // Convertir a horas
+      } else {
+        console.warn("La fecha de fin es anterior a la de inicio.");
+        return 0;
+      }
+    }
+    console.warn("Fechas no válidas:", start, end);
+    return 0;
+  };
 
-  // Verifica si los datos de WorkDays están siendo correctamente actualizados
-  useEffect(() => {
-    if (workDays.length > 0) {
-      calculateTotalHours(workDays);
-    }
-  }, [workDays]); 
+
+// Calcular las horas totales trabajadas para el mes
+const calculateTotalHours = (workDays) => {
+  if (!Array.isArray(workDays) || workDays.length === 0) {
+    console.warn("workDays no es un arreglo válido o está vacío.");
+    setTotalHours(0);
+    return;
+  }
+
+  let total = 0;
+  workDays.forEach(workDay => {
+    const intervals = workDay.intervalsList || []; 
+    intervals.forEach(interval => {
+      const { start_time, end_time } = interval;
+
+      // Validar los valores antes de pasarlos a convertTimeToDate
+      if (!start_time || !end_time) {
+        console.warn("Intervalo inválido:", interval);
+        return; // Saltar este intervalo si es inválido
+      }
+
+      const startDate = convertTimeToDate(start_time);
+      const endDate = convertTimeToDate(end_time);
+
+      total += duration(startDate, endDate);
+    });
+  });
+
+  setTotalHours(total);
+  console.log(`Total de horas trabajadas este mes: ${total.toFixed(2)} horas`);
+};
+
+  
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -179,9 +270,31 @@ const Home = () => {
 
       {/* Check-in and Check-out Buttons */}
       <div className="action-buttons">
-        <button className="action-btn" onClick={handleStartInterval} disabled={!!intervalId}>Check-in</button>
-        <button className="action-btn" onClick={handleEndInterval} disabled={!!intervalId}>Check-out</button>
+        <div className="home">
+          <h1>Gestión de WorkDays</h1>
+          <button onClick={handleCheckAndCreate}>Registrar Check-in</button>
+          {statusMessage && <p>{statusMessage}</p>}
+        </div>
+
+        <div>
+          <h1>Cerrar Intervalo</h1>
+          <p>Intervalo ID: {intervalId}</p>
+          <button onClick={handleCheckOut}>Cerrar Intervalo</button>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+        </div>
       </div>
+
+      <div>
+    {intervals.length === 0 ? (
+      <p>No se han encontrado intervalos</p>
+    ) : (
+      intervals.map(interval => (
+        <div key={interval.id}>
+          {/* Muestra información del intervalo aquí */}
+        </div>
+      ))
+    )}
+  </div>
 
       {/* Info Cards */}
       <div className="info-cards">
