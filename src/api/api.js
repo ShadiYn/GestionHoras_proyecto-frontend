@@ -254,6 +254,26 @@ export const getWorkDaysForCurrentMonth = async () => {
   }
 };
 
+export const createAutoWorkday = async () => {
+  try {
+    const token = localStorage.getItem("authToken");
+    console.log(token);
+    const response = await baseUrl.post("/workdays/checkandcreateautoworkday", {
+      headers: {
+        Authorization: `Basic ${token}`, // Añadir el token al encabezado de la solicitud
+      },
+    });
+    return response;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error en la respuesta del servidor:", error.response.data);
+    } else {
+      console.error("Error en la solicitud:", error.message);
+    }
+    throw error;
+  }
+};
+
 //funcion para finalizar el intervalo
 export const endInterval = async (intervalId) => {
   try {
@@ -340,6 +360,38 @@ export const updateUserDetails = async (obj) => {
   } catch (error) {
     console.error(
       "Error al actualizar los detalles del usuario:",
+      error.message
+    );
+    throw error;
+  }
+};
+
+// Función para crear un WorkDay con el primer intervalo automáticamente
+export const createWorkDayWithFirstInterval = async () => {
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      throw new Error(
+        "No se encontró un token de autenticación. Inicia sesión nuevamente."
+      );
+    }
+
+    // Crear el WorkDay y el primer intervalo usando el endpoint del backend
+    const response = await baseUrl.post(
+      "/workdays/checkandcreateautoworkday",
+      {},
+      {
+        headers: {
+          Authorization: `Basic ${token}`,
+        },
+      }
+    );
+
+    console.log("WorkDay y primer intervalo creados:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error al crear el WorkDay con el primer intervalo:",
       error.message
     );
     throw error;
