@@ -107,14 +107,8 @@ const Home = () => {
   }
 
   try {
-    const response = await getUserIntervals(intervalId);
+    const response = await getCurrentInterval();
     console.log("Respuesta de getUserIntervals:", response);
-
-    if (!response || !response.intervalsList) {
-      console.error("La respuesta no contiene intervalos válidos");
-      setError("No se pudieron cargar los intervalos.");
-      return;
-    }
 
     let userIntervals = response.intervalsList || [];
     if (userIntervals.length === 0) {
@@ -124,7 +118,7 @@ const Home = () => {
     setIntervals(userIntervals);
   } catch (error) {
     console.error("Error al cargar los intervalos:", error);
-    setError("Error al obtener los intervalos.");
+    
   }
 };
 
@@ -173,17 +167,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div>
-    {intervals.length === 0 ? (
-      <p>No se han encontrado intervalos</p>
-    ) : (
-      intervals.map(interval => (
-        <div key={interval.id}>
-          {/* Muestra información del intervalo aquí */}
-        </div>
-      ))
-    )}
-  </div>
+
 
       {/* Info Cards */}
       <div className="info-cards">
