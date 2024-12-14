@@ -55,7 +55,7 @@ export const loginUser = async ({ username, password }) => {
 };
 
 
-};
+
 
 // Configurar el token de autenticación en axios
 const setAuth = async (token) => {
@@ -136,13 +136,31 @@ export const getAllIntervals = async () => {
 //check out
 export const handleCheckOut = async (intervalId) => {
   try {
-    await baseUrl.get(`/intervals/end/${intervalId}`);
-    await baseUrl.get(`/intervals/end/${intervalId}`);
-    alert("Check-out registrado!");
+    const token = localStorage.getItem("authToken"); // Asegúrate de que el token esté presente
+
+    // Verifica si el token existe antes de hacer la solicitud
+    if (!token) {
+      throw new Error("Token no encontrado. Inicia sesión.");
+    }
+
+    const response = await baseUrl.get(
+      `/intervals/end/${intervalId}`, // URL con el ID del intervalo
+      {}, // El cuerpo puede estar vacío, ya que solo estamos actualizando el intervalo
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Asegúrate de enviar el token
+        },
+      }
+    );
+
+    console.log("Check-out exitoso. Hora de fin:", response.data);
+    alert("Check-out registrado con éxito!");
   } catch (error) {
     console.error("Error al registrar el check-out:", error);
+    alert("Error al registrar el check-out.");
   }
 };
+
 
 //obtener horas
 // Función para iniciar el intervalo (y crear el WorkDay si no existe)
@@ -302,40 +320,7 @@ export const getUserIntervals = async (intervalId) => {
   }
 };
 
-export const getCurrentInterval = async () => {
-  try {
-    const token = localStorage.getItem('authToken');
-    console.log("Token recuperado:", token);
 
-    if (!token) {
-      throw new Error("Token no disponible.");
-    }
-
-    const response = await baseUrl.get("/intervals/currentinterval", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
-
-    // Verifica el código de estado de la respuesta
-    console.log('Respuesta de getCurrentInterval:', response);
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener el intervalo actual:', error);
-    
-    // Verifica si el error tiene una respuesta del servidor
-    if (error.response) {
-      console.error('Respuesta del servidor:', error.response.data);
-      console.error('Código de estado:', error.response.status);
-    } else if (error.request) {
-      console.error('No se recibió respuesta del servidor:', error.request);
-    } else {
-      console.error('Error inesperado:', error.message);
-    }
-
-    throw error; // Lanza el error nuevamente para que lo maneje el componente que llamó a esta función
-  }
-};
 
 
 // api.js
@@ -357,13 +342,31 @@ export const fetchTotalHours = async () => {
 
 export const getCurrentInterval = async () => {
   try {
-    const response = await baseUrl.get("/intervals/currentinterval");
+const token = localStorage.getItem("authToken");
+console.log("Token recuperado:", token);
+if (!token) {
+  throw new Error("No se encontró un token válido.");
+}
+          console.log(token,'111111111111111')
+
+    const response = await baseUrl.get("/intervals/currentinterval",{},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(token,'111111111111111')
     return response.data;
   } catch (error) {
     console.error("Error al obtener el ultimo intervalo", error.message);
     throw error;
   }
 };
+
+
+
+
+
 
 export const updatePassword = async (payload) => {
   try {
