@@ -44,6 +44,9 @@ export const loginUser = async ({ username, password }) => {
  
 };
 
+
+
+
 // Configurar el token de autenticación en axios
 const setAuth = async (token) => {
   console.log("Configurando autorización con token:", token);
@@ -125,8 +128,10 @@ export const handleCheckOut = async (intervalId) => {
   
   } catch (error) {
     console.error("Error al registrar el check-out:", error);
+    alert("Error al registrar el check-out.");
   }
 };
+
 
 //obtener horas
 // Función para iniciar el intervalo (y crear el WorkDay si no existe)
@@ -298,6 +303,11 @@ export const getUserIntervals = async (intervalId) => {
   }
 };
 
+
+
+
+// api.js
+
 // Si 'fetchTotalHours' está definida en este archivo, asegúrate de exportarla
 export const fetchTotalHours = async () => {
   try {
@@ -313,13 +323,31 @@ export const fetchTotalHours = async () => {
 
 export const getCurrentInterval = async () => {
   try {
-    const response = await baseUrl.get("/intervals/currentinterval");
+const token = localStorage.getItem("authToken");
+console.log("Token recuperado:", token);
+if (!token) {
+  throw new Error("No se encontró un token válido.");
+}
+          console.log(token,'111111111111111')
+
+    const response = await baseUrl.get("/intervals/currentinterval",{},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(token,'111111111111111')
     return response.data;
   } catch (error) {
     console.error("Error al obtener el ultimo intervalo", error.message);
     throw error;
   }
 };
+
+
+
+
+
 
 export const updatePassword = async (payload) => {
   try {
