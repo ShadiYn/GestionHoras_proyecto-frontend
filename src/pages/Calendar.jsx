@@ -5,13 +5,16 @@ import {
   getWorkDaysForCurrentMonth,
   getCurrentInterval,
   handleCheckOut,
+  getIntervalsForWorkDay,
 } from "../api/api";
 import { useState, useEffect } from "react";
 
 const Calendar = () => {
   const navigate = useNavigate();
   const [workDays, setWorkDays] = useState([]);
-  const [interval, setIntervals] = useState(null);
+  const [interval, setInterval] = useState(null);
+  const [selectedWorkDay, setSelectedWorkDay] = useState(null);
+  const [workDayIntervals, setWorkDayIntervals] = useState([]);
 
   const handleHomeButton = () => {
     navigate("/home");
@@ -35,23 +38,52 @@ const Calendar = () => {
   }, []);
 
   const handleCreateWorkDay = async () => {
+    if (interval && !interval.end_time) {
+      alert("You must check out before checking in again.");
+      return;
+    }
     try {
       await createWorkDayWithFirstInterval();
       const interval = await getCurrentInterval();
       console.log("Last interval:", interval);
-      setIntervals(interval);
+      setInterval(interval);
       getWorkDays();
     } catch (error) {
       console.error("Error creating workday:", error);
     }
   };
 
-  const checkOut = async (intervalId) => {
+  const handleCheckOutButton = async (intervalId) => {
+    if (!interval || interval.end_time) {
+      alert("You must check in before checking out.");
+      return;
+    }
     try {
-      const endInterval = await handleCheckOut(intervalId);
-      console.log("End interval:", endInterval);
+      const updatedInterval = await handleCheckOut(intervalId);
+      console.log("Updated interval:", updatedInterval);
+      setInterval((prevInterval) => {
+        if (prevInterval && prevInterval.id === intervalId) {
+          return {
+            ...prevInterval,
+            end_time: updatedInterval.data,
+          };
+        }
+        return prevInterval;
+      });
+      console.log("Updated interval end_time:", updatedInterval.data);
     } catch (error) {
       console.error("Error checking out:", error);
+    }
+  };
+
+  const handleWorkDayClick = async (workDayId) => {
+    if (selectedWorkDay === workDayId) {
+      setSelectedWorkDay(null);
+      setWorkDayIntervals([]);
+    } else {
+      setSelectedWorkDay(workDayId);
+      const intervals = await getIntervalsForWorkDay(workDayId);
+      setWorkDayIntervals(intervals);
     }
   };
 
@@ -88,12 +120,29 @@ const Calendar = () => {
                   </li>
                 </ul>
                 <button
-                  onClick={() => {
-                    handleCheckOut(interval.id);
+                  onClick={async () => {
+                    await handleCheckOutButton(interval.id);
                   }}
                 >
                   Check Out
                 </button>
+                <button onClick={() => handleWorkDayClick(workDay.id)}>
+                  {selectedWorkDay === workDay.id ? "Hide Intervals" : "Show Intervals"}
+                </button>
+                {selectedWorkDay === workDay.id && (
+                  <div className="workday-intervals">
+                    {workDayIntervals.length > 0 ? (
+                      workDayIntervals.map((interval) => (
+                        <div key={interval.id} className="interval-card">
+                          <p>Start: {interval.start_time}</p>
+                          <p>End: {interval.end_time}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No intervals available for this workday.</p>
+                    )}
+                  </div>
+                )}
               </div>
             ))
           ) : (

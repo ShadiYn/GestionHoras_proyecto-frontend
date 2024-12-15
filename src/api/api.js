@@ -4,18 +4,11 @@ const baseUrl = axios.create({
   baseURL: "http://localhost:8080",
 });
 
-//funcoin de login
-//funcoin de login
 export const loginUser = async ({ username, password }) => {
-  // Generar token de autenticación
   const token = btoa(username + ":" + password);
-
-  // Log para ver el token generado
   console.log("Generando token para login:", token);
   localStorage.setItem("authToken", token);
-
   try {
-    // Log para verificar los datos enviados
     console.log(
       "Realizando solicitud POST para login a /login con los encabezados: ",
       {
@@ -24,7 +17,6 @@ export const loginUser = async ({ username, password }) => {
       }
     );
 
-    // Realizar la solicitud POST para login
     const response = await baseUrl.post(
       "/login",
       {},
@@ -36,10 +28,8 @@ export const loginUser = async ({ username, password }) => {
       }
     );
 
-    // Log para ver la respuesta del login
     console.log("Respuesta del login:", response.data);
 
-    // Guardar el token en la configuración de axios para futuras solicitudes
     setAuth(token);
 
     return response.data; // Retorna la respuesta del login (por ejemplo, token o mensaje)
@@ -52,9 +42,6 @@ export const loginUser = async ({ username, password }) => {
     throw error; // Lanzar el error para que pueda ser manejado en el componente
   }
  
-};
-
-
 };
 
 // Configurar el token de autenticación en axios
@@ -122,23 +109,20 @@ export const getAllIntervals = async () => {
     const response = await baseUrl.get('/intervals');
     console.log("Todos los intervalos:", response.data);
     return response.data;
-    await baseUrl.get(`/intervals/start/${intervalId}`);
-    alert("Check-in registrado!");
+
   } catch (error) {
     console.error("Error al obtener todos los intervalos:", error.message);
     throw error;
   }
 };
 
-
-
-
 //check out
 export const handleCheckOut = async (intervalId) => {
   try {
-    await baseUrl.get(`/intervals/end/${intervalId}`);
-    await baseUrl.get(`/intervals/end/${intervalId}`);
+    const endTime = await baseUrl.get(`/intervals/end/${intervalId}`);
     alert("Check-out registrado!");
+    return endTime;
+  
   } catch (error) {
     console.error("Error al registrar el check-out:", error);
   }
@@ -170,6 +154,18 @@ export const startInterval = async (intervalId) => {
     return response.data;
   } catch (error) {
     console.error("Error al iniciar el intervalo:", error.message);
+    throw error;
+  }
+};
+
+//Funcion para obtener los intervalos de un workday
+export const getIntervalsForWorkDay = async (workDayId) => {
+  try {
+    const response = await baseUrl.get(`/intervals/allintervals/${workDayId}`);
+    console.log("Intervalos del WorkDay:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener los intervalos del WorkDay:", error);
     throw error;
   }
 };
@@ -302,44 +298,6 @@ export const getUserIntervals = async (intervalId) => {
   }
 };
 
-export const getCurrentInterval = async () => {
-  try {
-    const token = localStorage.getItem('authToken');
-    console.log("Token recuperado:", token);
-
-    if (!token) {
-      throw new Error("Token no disponible.");
-    }
-
-    const response = await baseUrl.get("/intervals/currentinterval", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
-
-    // Verifica el código de estado de la respuesta
-    console.log('Respuesta de getCurrentInterval:', response);
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener el intervalo actual:', error);
-    
-    // Verifica si el error tiene una respuesta del servidor
-    if (error.response) {
-      console.error('Respuesta del servidor:', error.response.data);
-      console.error('Código de estado:', error.response.status);
-    } else if (error.request) {
-      console.error('No se recibió respuesta del servidor:', error.request);
-    } else {
-      console.error('Error inesperado:', error.message);
-    }
-
-    throw error; // Lanza el error nuevamente para que lo maneje el componente que llamó a esta función
-  }
-};
-
-
-// api.js
-
 // Si 'fetchTotalHours' está definida en este archivo, asegúrate de exportarla
 export const fetchTotalHours = async () => {
   try {
@@ -351,8 +309,6 @@ export const fetchTotalHours = async () => {
     throw error;
   }
 };
-
-
 
 
 export const getCurrentInterval = async () => {
@@ -412,28 +368,33 @@ export const createWorkDayWithFirstInterval = async () => {
   try {
     const token = localStorage.getItem("authToken");
     if (!token) {
-      throw new Error(
-        "No se encontró un token de autenticación. Inicia sesión nuevamente."
-      );
+      throw new Error("No se encontró un token de autenticación. Inicia sesión nuevamente.");
     }
 
-    // Crear el WorkDay y el primer intervalo usando el endpoint del backend
-    const response = await baseUrl.post(
-      "/workdays/checkandcreateautoworkday",
-      {},
-      {
-        headers: {
-          Authorization: `Basic ${token}`,
-        },
-      }
-    );
+    const config = {
+      headers: {
+        Authorization: `Basic ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
 
+    console.log('Configuración de la solicitud:', config);
+
+    // Crear el WorkDay y el primer intervalo usando el endpoint del backend
+    const response = await baseUrl.post('/workdays/checkandcreateautoworkday', {}, config);
     return response.data;
   } catch (error) {
-    console.error(
-      "Error al crear el WorkDay con el primer intervalo:",
-      error.message
-    );
+    if (error.response) {
+      // El servidor respondió con un código de estado fuera del rango 2xx
+      console.error('Error al crear el WorkDay con el primer intervalo:', error.response.data);
+      console.log('Detalles del error:', error.response.data); // Log adicional para detalles del error
+    } else if (error.request) {
+      // La solicitud fue hecha pero no se recibió respuesta
+      console.error('No se recibió respuesta del servidor:', error.request);
+    } else {
+      // Algo sucedió al configurar la solicitud
+      console.error('Error al configurar la solicitud:', error.message);
+    }
     throw error;
   }
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from "../providers/UserProvider";
 import '../app/Home.css'; 
-import { getUserIntervals, getWorkDaysForCurrentMonth, getTotalWorkedHoursForCurrentMonth, checkAndCreateAutoWorkday, functionCheckOut, getAllIntervals, getCurrentInterval } from '../api/api';
+import { getUserIntervals, getWorkDaysForCurrentMonth, getTotalWorkedHoursForCurrentMonth, createWorkDayWithFirstInterval, getAllIntervals, getCurrentInterval } from '../api/api';
 
 const Home = () => {
   const { setUser } = useUserContext();
@@ -19,7 +19,7 @@ const Home = () => {
 
   const handleCheckAndCreate = async () => {
     try {
-      const response = await checkAndCreateAutoWorkday();
+      const response = await createWorkDayWithFirstInterval();
       if (response.status === 201) {
         setStatusMessage(response.data);
         console.log("Operación exitosa:", response.data);
@@ -34,25 +34,25 @@ const Home = () => {
     }
   };
 
-  const handleCheckOut = async () => {
-    try {
-      const interval = await getCurrentInterval();
-      console.log("Interval obtenido:", interval); 
+  // const handleCheckOut = async () => {
+  //   try {
+  //     const interval = await getCurrentInterval();
+  //     console.log("Interval obtenido:", interval); 
       
-      if (!interval || !interval.id) {
-        console.error("No se encontró un intervalo válido.");
-        return;
-      }
+  //     if (!interval || !interval.id) {
+  //       console.error("No se encontró un intervalo válido.");
+  //       return;
+  //     }
   
-      await functionCheckOut(interval.id); 
+  //     await functionCheckOut(interval.id); 
   
-      await loadIntervals();  
-      alert("Check-out registrado correctamente!");
-    } catch (error) {
-      console.error("Error al registrar el check-out:", error);
-      alert("Tienes que hacer check-in para poder realizar el check-out");
-    }
-  };
+  //     await loadIntervals();  
+  //     alert("Check-out registrado correctamente!");
+  //   } catch (error) {
+  //     console.error("Error al registrar el check-out:", error);
+  //     alert("Tienes que hacer check-in para poder realizar el check-out");
+  //   }
+  // };
   
   
   const convertTimeToDate = (timeStr) => {
@@ -150,10 +150,6 @@ useEffect(() => {
     }
   };
   
-
-  
-  
-
   // Efecto para cargar intervalos si intervalId está disponible y no está en carga
   useEffect(() => {
     if (intervalId && !isLoading) {
@@ -249,8 +245,6 @@ const calculateTotalHours = (workDays) => {
   console.log(`Total de horas trabajadas este mes: ${total.toFixed(2)} horas`);
 };
 
-  
-
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setUser(null);
@@ -279,7 +273,7 @@ const calculateTotalHours = (workDays) => {
         <div>
           <h1>Cerrar Intervalo</h1>
           <p>Intervalo ID: {intervalId}</p>
-          <button onClick={handleCheckOut}>Cerrar Intervalo</button>
+          {/* <button onClick={handleCheckOut}>Cerrar Intervalo</button> */}
           {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
       </div>
