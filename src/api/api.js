@@ -41,11 +41,7 @@ export const loginUser = async ({ username, password }) => {
     );
     throw error; // Lanzar el error para que pueda ser manejado en el componente
   }
- 
 };
-
-
-
 
 // Configurar el token de autenticación en axios
 const setAuth = async (token) => {
@@ -109,10 +105,9 @@ export const getOrCreateCurrentWorkDay = async () => {
 
 export const getAllIntervals = async () => {
   try {
-    const response = await baseUrl.get('/intervals');
+    const response = await baseUrl.get("/intervals");
     console.log("Todos los intervalos:", response.data);
     return response.data;
-
   } catch (error) {
     console.error("Error al obtener todos los intervalos:", error.message);
     throw error;
@@ -125,13 +120,11 @@ export const handleCheckOut = async (intervalId) => {
     const endTime = await baseUrl.get(`/intervals/end/${intervalId}`);
     alert("Check-out registrado!");
     return endTime;
-  
   } catch (error) {
     console.error("Error al registrar el check-out:", error);
     alert("Error al registrar el check-out.");
   }
 };
-
 
 //obtener horas
 // Función para iniciar el intervalo (y crear el WorkDay si no existe)
@@ -191,7 +184,6 @@ export const getTotalWorkedHoursForCurrentMonth = async () => {
         Authorization: `Basic ${token}`, // El token debe ser enviado en el encabezado
       },
     });
-    
 
     const workdays = response.data; // Suponiendo que la respuesta contiene los workdays
 
@@ -272,7 +264,6 @@ export const getIntervalsForMonth = async (userId) => {
   }
 };
 
-
 export const getIntervalIdFromDB = async () => {
   const response = await baseUrl.get("/intervals/current");
   return response.data;
@@ -287,14 +278,14 @@ export const getUserIntervals = async (intervalId) => {
       console.error("Token no encontrado. Por favor, inicia sesión.");
       return;
     }
-    
+
     const response = await baseUrl.get("/intervals/currentinterval", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    
-    console.log('respuesta 11111111111111111111', response.data)
+
+    console.log("respuesta 11111111111111111111", response.data);
 
     return response.data;
   } catch (error) {
@@ -303,40 +294,39 @@ export const getUserIntervals = async (intervalId) => {
   }
 };
 
-
-
-
 // api.js
 
 // Si 'fetchTotalHours' está definida en este archivo, asegúrate de exportarla
 export const fetchTotalHours = async () => {
   try {
     const hours = await getTotalWorkedHoursForCurrentMonth();
-    console.log("Horas obtenidas del mes:", hours);  // Verifica lo que se recibe de la API
-    return hours;  // Devolver las horas totales
+    console.log("Horas obtenidas del mes:", hours); // Verifica lo que se recibe de la API
+    return hours; // Devolver las horas totales
   } catch (error) {
     console.error("Error al obtener las horas trabajadas:", error);
     throw error;
   }
 };
 
-
 export const getCurrentInterval = async () => {
   try {
-const token = localStorage.getItem("authToken");
-console.log("Token recuperado:", token);
-if (!token) {
-  throw new Error("No se encontró un token válido.");
-}
-          console.log(token,'111111111111111')
+    const token = localStorage.getItem("authToken");
+    console.log("Token recuperado:", token);
+    if (!token) {
+      throw new Error("No se encontró un token válido.");
+    }
+    console.log(token, "111111111111111");
 
-    const response = await baseUrl.get("/intervals/currentinterval",{},
+    const response = await baseUrl.get(
+      "/intervals/currentinterval",
+      {},
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
-      console.log(token,'111111111111111')
+      }
+    );
+    console.log(token, "111111111111111");
     return response.data;
   } catch (error) {
     console.error("Error al obtener el ultimo intervalo", error.message);
@@ -344,16 +334,11 @@ if (!token) {
   }
 };
 
-
-
-
-
-
 export const updatePassword = async (payload) => {
   try {
     const token = localStorage.getItem("authToken");
     const decodeToken = atob(token);
-    const [username,] = decodeToken.split(":");
+    const [username] = decodeToken.split(":");
     const newPassword = payload.password;
     const newToken = btoa(username + ":" + newPassword);
     localStorage.setItem("authToken", newToken);
@@ -396,7 +381,9 @@ export const createWorkDayWithFirstInterval = async () => {
   try {
     const token = localStorage.getItem("authToken");
     if (!token) {
-      throw new Error("No se encontró un token de autenticación. Inicia sesión nuevamente.");
+      throw new Error(
+        "No se encontró un token de autenticación. Inicia sesión nuevamente."
+      );
     }
 
     const config = {
@@ -406,23 +393,57 @@ export const createWorkDayWithFirstInterval = async () => {
       },
     };
 
-    console.log('Configuración de la solicitud:', config);
+    console.log("Configuración de la solicitud:", config);
 
     // Crear el WorkDay y el primer intervalo usando el endpoint del backend
-    const response = await baseUrl.post('/workdays/checkandcreateautoworkday', {}, config);
+    const response = await baseUrl.post(
+      "/workdays/checkandcreateautoworkday",
+      {},
+      config
+    );
     return response.data;
   } catch (error) {
     if (error.response) {
       // El servidor respondió con un código de estado fuera del rango 2xx
-      console.error('Error al crear el WorkDay con el primer intervalo:', error.response.data);
-      console.log('Detalles del error:', error.response.data); // Log adicional para detalles del error
+      console.error(
+        "Error al crear el WorkDay con el primer intervalo:",
+        error.response.data
+      );
+      console.log("Detalles del error:", error.response.data); // Log adicional para detalles del error
     } else if (error.request) {
       // La solicitud fue hecha pero no se recibió respuesta
-      console.error('No se recibió respuesta del servidor:', error.request);
+      console.error("No se recibió respuesta del servidor:", error.request);
     } else {
       // Algo sucedió al configurar la solicitud
-      console.error('Error al configurar la solicitud:', error.message);
+      console.error("Error al configurar la solicitud:", error.message);
     }
+    throw error;
+  }
+};
+
+export const getNumberUnattended = async () => {
+  try {
+    const token = localStorage.getItem("authToken");
+    console.log("Token recuperado:", token);
+    if (!token) {
+      throw new Error("No se encontró un token válido.");
+    }
+    console.log(token, "111111111111111");
+
+    const response = await baseUrl.get(
+      "/workdays/unattendednumber",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(token, "111111111111111");
+    console.log(response, response);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el ultimo intervalo", error.message);
     throw error;
   }
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from "../providers/UserProvider";
 import '../app/Home.css'; 
-import {getUserIntervals, getWorkDaysForCurrentMonth, getTotalWorkedHoursForCurrentMonth,   getAllIntervals, getCurrentInterval, createWorkDayWithFirstInterval, handleCheckOut} from '../api/api';
+import {getNumberUnattended, getUserIntervals, getWorkDaysForCurrentMonth, getTotalWorkedHoursForCurrentMonth,   getAllIntervals, getCurrentInterval, createWorkDayWithFirstInterval, handleCheckOut} from '../api/api';
 
 const Home = () => {
   const { setUser } = useUserContext();
@@ -16,6 +16,7 @@ const Home = () => {
   const [, setWorkDays] = useState([]);  
   const [statusMessage, setStatusMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true); 
+  const [unattended, setUnattended] = useState(27); 
 
   const handleCheckAndCreate = async () => {
     try {
@@ -135,6 +136,20 @@ const Home = () => {
     fetchTotalHours(); 
   }, []); 
 
+  useEffect(() => {
+    const fetchUnattended = async () => {
+      try {
+        const unattended = await getNumberUnattended();
+        setUnattended(unattended); 
+      } catch (error) {
+        console.error("Error al obtener las horas trabajadas:", error);
+      }
+    };
+
+    fetchUnattended(); 
+  }, []); 
+
+
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setUser(null);
@@ -177,7 +192,7 @@ const Home = () => {
         </div>
         <div className="card">
           <h3>Ausencias</h3>
-          <p>total ausencias</p>
+          <p>{unattended}</p>
         </div>
         <div className="card">
           <h3>Horas Complementarias</h3>
