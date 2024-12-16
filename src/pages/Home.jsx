@@ -1,66 +1,22 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUserContext } from "../providers/UserProvider";
-<<<<<<< Updated upstream
 import '../app/Home.css'; 
 import {getNumberUnattended, getUserIntervals,     getAllIntervals, getCurrentInterval, createWorkDayWithFirstInterval, handleCheckOut, getWorkDaysForCurrentMonth, getIntervalsForWorkDay} from '../api/api';
-=======
-import "../app/Home.css";
-import {
-  getNumberUnattended,
-  getUserIntervals,
-  getWorkDaysForCurrentMonth,
-  getTotalWorkedHoursForCurrentMonth,
-  getAllIntervals,
-  getCurrentInterval,
-  createWorkDayWithFirstInterval,
-  handleCheckOut,
-} from "../api/api";
->>>>>>> Stashed changes
 
 const Home = () => {
   const { setUser } = useUserContext();
   const navigate = useNavigate();
   const { user } = useUserContext();
-<<<<<<< Updated upstream
   const [, setIntervals] = useState([]); 
-=======
-  const [intervals, setIntervals] = useState([]);
->>>>>>> Stashed changes
   const [intervalId, setIntervalId] = useState(null);
-  const [totalHours, setTotalHours] = useState(0);
+  const [totalHours, setTotalHours] = useState(0);  
   const userId = user?.id;
   const [error, setError] = useState(null);
-<<<<<<< Updated upstream
   const [statusMessage, setStatusMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true); 
   const [unattended, setUnattended] = useState(27); 
   const [, setLoading]=useState(true)
-=======
-  const [, setWorkDays] = useState([]);
-  const [statusMessage, setStatusMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [unattended, setUnattended] = useState(27);
-  const [flexibleInput, setFlexibleInput] = useState("");
-  const [showModal, setShowModal] = useState("");
-
-  const handleOpenModal = () => {
-    setShowModal(true);
-    console.log("modal", "openmodal");
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  const handleInputChange = (e) => {
-    setFlexibleInput(e.target.value);
-  };
-  const handleSubmit = () => {
-    alert("Submitted input: " + flexibleInput);
-    setShowModal(false); // Close modal after submission
-  };
->>>>>>> Stashed changes
 
   const handleCheckAndCreate = async () => {
     try {
@@ -81,29 +37,26 @@ const Home = () => {
       } else {
         setStatusMessage("Error inesperado al procesar la solicitud.");
       }
-      console.error(
-        "Error en el manejo de la operación:",
-        error.response?.data || error.message
-      );
+      console.error("Error en el manejo de la operación:", error.response?.data || error.message);
     }
   };
 
   const handleCheckOutClick = async () => {
     try {
       const interval = await getCurrentInterval();
-      console.log("Intervalo obtenido:", interval);
-
+      console.log("Intervalo obtenido:", interval); 
+      
       if (!interval || !interval.id) {
         console.error("No se encontró un intervalo válido.");
         alert("Tienes que hacer check-in para poder realizar el check-out.");
         return;
       }
-
+  
       // Llamar la función de check-out desde api.js
-      await handleCheckOut(interval.id);
-
+      await handleCheckOut(interval.id); 
+  
       // Recargar los intervalos después del check-out
-      await loadIntervals();
+      await loadIntervals();  
       alert("Check-out registrado correctamente!");
     } catch (error) {
       console.error("Error al registrar el check-out:", error);
@@ -111,7 +64,6 @@ const Home = () => {
     }
   };
 
-<<<<<<< Updated upstream
    const convertToFullDate = (timeStr) => {
     if (!timeStr) return null;
 
@@ -190,41 +142,6 @@ useEffect(() => {
         setIntervalId(interval.id);
       } else {
         console.warn("No se encontró un intervalo válido.");
-=======
-  const convertTimeToDate = (timeStr) => {
-    if (!timeStr || typeof timeStr !== "string") {
-      console.warn("Invalid time string received:", timeStr);
-      return new Date(0); // Devuelve una fecha por defecto o maneja el error según el caso
-    }
-
-    const [hours, minutes, seconds] = timeStr.split(":");
-    const [sec, milli] = seconds ? seconds.split(".") : [0, 0]; // Maneja casos donde `seconds` puede ser undefined
-    const date = new Date();
-    date.setHours(
-      parseInt(hours, 10),
-      parseInt(minutes, 10),
-      parseInt(sec, 10),
-      parseInt(milli || 0, 10)
-    );
-    return date;
-  };
-
-  useEffect(() => {
-    const fetchCurrentInterval = async () => {
-      setIsLoading(true);
-      try {
-        const interval = await getCurrentInterval();
-        console.log("Respuesta completa de getCurrentInterval:", interval); // Ver toda la respuesta
-
-        if (interval && interval.id) {
-          setIntervalId(interval.id);
-        } else {
-          console.warn("No se encontró un intervalo válido.");
-          setIntervalId(null);
-        }
-      } catch (error) {
-        console.error("Error al obtener el intervalo actual:", error);
->>>>>>> Stashed changes
         setIntervalId(null);
       }
     } catch (error) {
@@ -268,7 +185,6 @@ useEffect(() => {
         setLoading(false); // Finalizar carga
       }
     };
-<<<<<<< Updated upstream
 
     fetchTotalWorkedHours();
   }, []);
@@ -285,40 +201,36 @@ const calculateDurationInHours = (startTime, endTime) => {
   };
 
 
-=======
-    fetchCurrentInterval();
-  }, []);
->>>>>>> Stashed changes
 
   useEffect(() => {
     if (!isLoading && intervalId) {
-      loadIntervals();
+      loadIntervals(); 
     }
-  }, [isLoading, intervalId]);
+  }, [isLoading, intervalId]); 
 
   const loadIntervals = async () => {
-    if (!intervalId || isNaN(intervalId)) {
-      console.error("Interval ID no es válido:", intervalId);
-      setError("Interval ID no definido o no es válido.");
-      return;
+  if (!intervalId || isNaN(intervalId)) {
+    console.error("Interval ID no es válido:", intervalId);
+    setError("Interval ID no definido o no es válido.");
+    return;  
+  }
+
+  try {
+    const response = await getCurrentInterval();
+    console.log("Respuesta de getUserIntervals:", response);
+
+    let userIntervals = response.intervalsList || [];
+    if (userIntervals.length === 0) {
+      userIntervals = await getAllIntervals(); // Si no hay intervalos, obtenemos todos los intervalos
     }
 
-    try {
-      const response = await getCurrentInterval();
-      console.log("Respuesta de getUserIntervals:", response);
+    setIntervals(userIntervals);
+  } catch (error) {
+    console.error("Error al cargar los intervalos:", error);
+    
+  }
+};
 
-      let userIntervals = response.intervalsList || [];
-      if (userIntervals.length === 0) {
-        userIntervals = await getAllIntervals(); // Si no hay intervalos, obtenemos todos los intervalos
-      }
-
-      setIntervals(userIntervals);
-    } catch (error) {
-      console.error("Error al cargar los intervalos:", error);
-    }
-  };
-
-<<<<<<< Updated upstream
 useEffect(() => {
   const fetchIntervals = async () => {
     try {
@@ -332,33 +244,20 @@ useEffect(() => {
   fetchIntervals();
 }, []);
 
-=======
-  useEffect(() => {
-    const fetchTotalHours = async () => {
-      try {
-        const hours = await getTotalWorkedHoursForCurrentMonth();
-        setTotalHours(hours);
-      } catch (error) {
-        console.error("Error al obtener las horas trabajadas:", error);
-      }
-    };
-
-    fetchTotalHours();
-  }, []);
->>>>>>> Stashed changes
 
   useEffect(() => {
     const fetchUnattended = async () => {
       try {
         const unattended = await getNumberUnattended();
-        setUnattended(unattended);
+        setUnattended(unattended); 
       } catch (error) {
         console.error("Error al obtener las horas trabajadas:", error);
       }
     };
 
-    fetchUnattended();
-  }, []);
+    fetchUnattended(); 
+  }, []); 
+
 
 
 
@@ -372,17 +271,12 @@ useEffect(() => {
       {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-links">
-          <button className="nav-btn" onClick={() => navigate("/calendar")}>
-            Calendario
-          </button>
-          <button className="nav-btn" onClick={() => navigate("/Perfil")}>
-            Perfil
-          </button>
-          <button className="nav-btn logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
+          <button className="nav-btn" onClick={() => navigate("/calendar")}>Calendario</button>
+          <button className="nav-btn" onClick={() => navigate("/Perfil")}>Perfil</button>
+          <button className="nav-btn logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>
+
       {/* Check-in and Check-out Buttons */}
       <div className="action-buttons">
         <div className="home">
@@ -395,9 +289,11 @@ useEffect(() => {
           <h1>Cerrar Intervalo</h1>
           <p>Intervalo ID: {intervalId}</p>
           <button onClick={handleCheckOutClick}>Cerrar Intervalo</button>
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
       </div>
+
+
 
       {/* Info Cards */}
       <div className="info-cards">
@@ -420,25 +316,15 @@ useEffect(() => {
       {/* Footer */}
       <div className="footer">
         <h2>Total aproximado a cobrar:</h2>
-        <p>
-          Total a cobrar = Horas mes * precio fijo + Horas Complementarias *
-          PrecioHora complementaria
-        </p>
+        <p>Total a cobrar = Horas mes * precio fijo + Horas Complementarias * PrecioHora complementaria</p>
       </div>
 
       {/* Explanation Section */}
       <div className="explicacion">
-        <p>
-          Se podrán hacer más de un check-in/check-out para contar los descansos
-          realizados
-        </p>
-        <p>
-          Finalmente, una tarjeta que implementa las horas trabajadas ese día
-        </p>
+        <p>Se podrán hacer más de un check-in/check-out para contar los descansos realizados</p>
+        <p>Finalmente, una tarjeta que implementa las horas trabajadas ese día</p>
       </div>
     </div>
-
-    
   );
 };
 
