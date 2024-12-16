@@ -8,16 +8,15 @@ const Home = () => {
   const { setUser } = useUserContext();
   const navigate = useNavigate();
   const { user } = useUserContext();
-  const [intervals, setIntervals] = useState([]); 
+  const [, setIntervals] = useState([]); 
   const [intervalId, setIntervalId] = useState(null);
   const [totalHours, setTotalHours] = useState(0);  
   const userId = user?.id;
   const [error, setError] = useState(null);
-  const [, setWorkDays] = useState([]);  
   const [statusMessage, setStatusMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true); 
   const [unattended, setUnattended] = useState(27); 
-  const [Loading, setLoading]=useState(true)
+  const [, setLoading]=useState(true)
 
   const handleCheckAndCreate = async () => {
     try {
@@ -195,39 +194,7 @@ const calculateDurationInHours = (startTime, endTime) => {
     return 0;
   };
 
-  // Función para obtener y calcular las horas trabajadas por el usuario
-  const fetchAndCalculateUserMonthlyHours2 = async () => {
-    try {
-      const response = await getUserIntervals(userId); // Obtener los intervalos del usuario autenticado
-      console.log("Respuesta de la API:", response);
 
-      let intervals = response.data || []; // Asignamos un array vacío si no hay datos
-      console.log("Intervalos completos:", intervals);
-
-      if (!Array.isArray(intervals)) {
-        console.error("intervals no es un array", intervals);
-        intervals = [];
-      }
-
-      // Filtramos los intervalos válidos
-      const validIntervals = intervals.filter((interval) => interval.startTime && interval.endTime);
-      console.log("Intervalos válidos:", validIntervals);
-
-      // Calculamos las horas totales trabajadas en el mes
-      const totalHoursWorked = validIntervals.reduce((total, interval) => {
-        const duration = calculateDurationInHours(interval.startTime, interval.endTime);
-        return total + duration;
-      }, 0);
-
-      console.log("Total horas trabajadas en el mes:", totalHoursWorked);
-      setTotalHours(totalHoursWorked); // Actualizamos el estado con el total de horas
-    } catch (error) {
-      console.error("Error al calcular las horas mensuales del usuario:", error);
-      setError("Error al obtener las horas trabajadas.");
-    } finally {
-      setIsLoading(false); // Finalizamos la carga
-    }
-  };
 
   useEffect(() => {
     if (!isLoading && intervalId) {
