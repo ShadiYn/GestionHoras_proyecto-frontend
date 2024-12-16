@@ -264,35 +264,39 @@ export const getIntervalsForMonth = async (userId) => {
   }
 };
 
+
+
 export const getIntervalIdFromDB = async () => {
   const response = await baseUrl.get("/intervals/current");
   return response.data;
 };
-
-export const getUserIntervals = async (intervalId) => {
+export const getUserIntervals = async () => {
   try {
-    // Obtener el token de localStorage
     const token = localStorage.getItem("authToken");
-
     if (!token) {
-      console.error("Token no encontrado. Por favor, inicia sesión.");
-      return;
+      throw new Error("Token no encontrado. Inicia sesión nuevamente.");
     }
+
+    console.log("Enviando token:", token);
 
     const response = await baseUrl.get("/intervals/currentinterval", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Basic ${token}`,
       },
     });
 
-    console.log("respuesta 11111111111111111111", response.data);
-
+    console.log("Intervalos obtenidos:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error al obtener los intervalos:", error);
-    throw error; // Lanzamos el error para que sea manejado en el componente
+    if (error.response) {
+      console.error("Error al obtener los intervalos:", error.response.status, error.response.data);
+    } else {
+      console.error("Error en la solicitud:", error.message);
+    }
+    throw error;
   }
 };
+
 
 // api.js
 
