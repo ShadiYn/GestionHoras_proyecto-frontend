@@ -23,7 +23,7 @@ const Home = () => {
       const response = await createWorkDayWithFirstInterval();
       if (response === "User is flexible.") {
 
-        handleSubmit();
+       // handleSubmit();
         setStatusMessage(response.data);
         console.log("Operación exitosa:", response.data);
       }
