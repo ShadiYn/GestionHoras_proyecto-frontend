@@ -35,6 +35,15 @@ const Calendar = () => {
 
   useEffect(() => {
     getWorkDays();
+    const fetchCurrentInterval = async () => {
+      try {
+        const currentInterval = await getCurrentInterval();
+        setInterval(currentInterval);
+      } catch (error) {
+        console.error("Error fetching current interval:", error);
+      }
+    };
+    fetchCurrentInterval();
   }, []);
 
   const handleCreateWorkDay = async () => {
@@ -43,10 +52,11 @@ const Calendar = () => {
       return;
     }
     try {
-      await createWorkDayWithFirstInterval();
+      const newWorkDay = await createWorkDayWithFirstInterval();
       const interval = await getCurrentInterval();
       console.log("Last interval:", interval);
       setInterval(interval);
+      setSelectedWorkDay(newWorkDay.id); // Set the new workday as selected
       getWorkDays();
     } catch (error) {
       console.error("Error creating workday:", error);
@@ -71,6 +81,7 @@ const Calendar = () => {
         return prevInterval;
       });
       console.log("Updated interval end_time:", updatedInterval.data);
+      getWorkDays(); // Refresh workdays to reflect the updated interval
     } catch (error) {
       console.error("Error checking out:", error);
     }
@@ -107,27 +118,31 @@ const Calendar = () => {
           {workDays && workDays.length > 0 ? (
             workDays.map((workDay) => (
               <div key={workDay.id} className="workday-card">
-                <h3>WorkDay: {workDay.day}</h3>
+                <h3>{workDay.day}</h3>
                 <ul>
-                  <li>
-                    {interval && (
-                      <div className="interval-card">
-                        <h3>Intervals</h3>
-                        <p>Start: {interval.start_time}</p>
-                        <p>End: {interval.end_time}</p>
-                      </div>
-                    )}
-                  </li>
+                  {workDay.day === new Date().toISOString().split("T")[0] && (
+                    <div className="interval-card">
+                      <h3>Intervals</h3>
+                      <p>Start: {interval ? interval.start_time : "N/A"}</p>
+                      <p>End: {interval ? interval.end_time : "N/A"}</p>
+                    </div>
+                  )}
                 </ul>
-                <button
-                  onClick={async () => {
-                    await handleCheckOutButton(interval.id);
-                  }}
-                >
-                  Check Out
-                </button>
+
+                {workDay.day === new Date().toISOString().split("T")[0] && (
+                  <button
+                    className="calendar-button"
+                    onClick={async () => {
+                      await handleCheckOutButton(interval.id);
+                    }}
+                  >
+                    Check Out
+                  </button>
+                )}
                 <button onClick={() => handleWorkDayClick(workDay.id)}>
-                  {selectedWorkDay === workDay.id ? "Hide Intervals" : "Show Intervals"}
+                  {selectedWorkDay === workDay.id
+                    ? "Hide Intervals"
+                    : "Show Intervals"}
                 </button>
                 {selectedWorkDay === workDay.id && (
                   <div className="workday-intervals">
