@@ -1,75 +1,121 @@
-.auth-container {
-    font-family: Arial, sans-serif;
-    padding: 50px; /* Aumentar espacio interno */
-    size: 100px;
-    max-width: 900px; /* Aumentar el ancho máximo */
-    margin:auto;
-    background-color: #aa3c3c00;
-    border-radius: 8px;
-  /* Más profundidad */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+/* General Container */
+.elegant-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to bottom right, #a0bda1, #a0bda1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-card {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Header */
+.login-header {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Formulario de Login con una sola columna */
+.auth-formLogin{
+  display: grid;
+  grid-template-columns: 1fr; /* Solo una columna */
+  gap: 1.5rem; /* Espacio entre los elementos */
+  grid-template-areas: 
+    "username"
+    "password"
+    "submit"
+    "register";
+}
+
+/* Input Group */
+.input-group {
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #4facfe;
+  box-shadow: 0 0 5px rgba(79, 172, 254, 0.5);
+}
+
+/* Botones de Login y Register */
+.login-button,
+.register-button {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s;
+}
+
+.login-button {
+  background: #71aa72;
+  color: #fff;
+}
+
+.login-button:hover {
+  background: #557156;
+  transform: scale(1.02);
+}
+
+.register-button {
+  background: #ddd;
+  color: #333;
+}
+
+.register-button:hover {
+  background: #ccc;
+  transform: scale(1.02);
+}
+
+/* Error Message */
+.auth-error {
+  color: red;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
-  .auth-header {
-    text-align: center;
-    color: #007bff;
-    font-size: 24px; /* Hacer el título más destacado */
-    margin-bottom: 30px; /* Más espacio debajo del título */
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* Más espacio entre los elementos */
-  }
-  
-  .auth-form label {
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .auth-form input {
-    padding: 15px; /* Más altura en los campos */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  .auth-form button {
-    padding: 15px; /* Botones más grandes */
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    color: white;
-    font-size: 18px; /* Texto más grande */
-    transition: background-color 0.3s;
-  }
-  
-  .auth-form button:hover {
-    background-color: #0056b3;
-  }
-  
-  .auth-form .secondary-button {
-    background-color: #28a745;
-  }
-  
-  .auth-form .secondary-button:hover {
-    background-color: #218838;
-  }
-  
-  .auth-error {
-    color: #dc3545;
-    font-size: 16px; /* Texto de error más visible */
-    text-align: center;
-  }
-  
-  .auth-success {
-    color: #28a745;
-    font-size: 16px; /* Texto de éxito más visible */
-    text-align: center;
-  }
-  
+}

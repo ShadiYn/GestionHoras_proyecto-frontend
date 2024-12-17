@@ -1,4 +1,4 @@
-/* Calendar.css */
+/* Profile.css */
 
 body {
   font-family: Arial, sans-serif;
@@ -8,16 +8,9 @@ body {
 }
 
 .navbar {
- background-color: #333;
+  background-color: #333;
   overflow: hidden;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
 }
-
 
 .navbar-links {
   display: flex;
@@ -28,7 +21,9 @@ body {
 .nav-btn {
   background-color: #4CAF50;
   color: white;
+  padding: 14px 20px;
   text-align: center;
+  text-decoration: none;
   display: inline-block;
   font-size: 16px;
   margin: 4px 2px;
@@ -41,43 +36,49 @@ body {
   background-color: #45a049;
 }
 
-.workday-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+.home-container {
   padding: 20px;
 }
 
-.workday-card {
+.welcome {
+  color: white;
+  text-align: center;
+ margin-right: 79px;
+ margin-top: 20px;
+ font-size: 35px;
+}
+
+.user-info-container {
   background-color: white;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 15px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin: 10px;
   padding: 20px;
-  width: 300px;
-}
-.logout-btn {
-    background-color: #dc3545;
-    color: white;
+  margin: 20px auto;
+  max-width: 600px;
 }
 
-.logout-btn:hover {
-    background-color: #c82333;
-}
-.workday-card h3 {
-  margin-top: 0;
+.user-info-container div {
+  margin-bottom: 10px;
 }
 
-.interval-card {
-  background-color: #f9f9f9;
+.user-info-container label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.user-info-container input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
   border: 1px solid #ddd;
   border-radius: 4px;
-  padding: 10px;
-  margin: 10px 0;
 }
 
-.workday-intervals {
+.schedule-container {
+  display: flex;
+  justify-content: space-between;
   margin-top: 10px;
 }
 
@@ -97,4 +98,17 @@ button {
 
 button:hover {
   background-color: #45a049;
+}
+
+.cancel-button {
+  background-color: #f44336;
+}
+
+.cancel-button:hover {
+  background-color: #e53935;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
 }

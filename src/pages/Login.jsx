@@ -1,8 +1,8 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { loginUser } from "../api/api";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../providers/UserProvider";
-import "../app/Auth.css"; // Estilos compartidos
+import "../app/Auth.css"; // Importa los estilos
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -37,37 +37,43 @@ const Login = () => {
   const handleRegister = () => navigate("/register");
 
   return (
-    <div className="auth-container">
-      <h2 className="auth-header">Login</h2>
-      <form className="auth-form" onSubmit={handleLogin}>
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {error && <p className="auth-error">{error}</p>}
-        <button type="submit">Login</button>
-        <button
-          type="button"
-          className="secondary-button"
-          onClick={handleRegister}
-        >
-          Register
-        </button>
-      </form>
+    <div className="auth-container elegant-login">
+      <div className="login-card">
+        <h2 className="login-header">Welcome Back</h2>
+        <form className="auth-formLogin" onSubmit={handleLogin}>
+          <div className="input-group">
+            <label>Username</label>
+            <input
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {error && <p className="auth-error">{error}</p>}
+          <button type="submit" className="login-button">
+            Login
+          </button>
+          <button
+            type="button"
+            className="register-button"
+            onClick={handleRegister}
+          >
+            Register
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

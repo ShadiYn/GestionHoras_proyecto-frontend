@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registro } from "../api/api";
-import "../app/Auth.css"; // Estilos compartidos
+import "../app/Register.css"; // Importa los estilos
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -60,103 +60,110 @@ const Register = () => {
   };
 
   return (
-    <div className="auth-container">
-      <h2 className="auth-header">Registro</h2>
-      <form className="auth-form" onSubmit={handleRegister}>
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Last Name:</label>
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Confirm Password:</label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Schedule:</label>
-          <div>
-            <label>
-              <input
-                type="radio"
-                name="schedule"
-                value="normal"
-                checked={!isFlexible}
-                onChange={() => setIsFlexible(false)}
-              />
-              Normal
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="schedule"
-                value="flexible"
-                checked={isFlexible}
-                onChange={() => setIsFlexible(true)}
-              />
-              Flexible
-            </label>
+    <div className="auth-container elegant-register">
+      <div className="register-card">
+        <h2 className="auth-header">Create an Account</h2>
+        <form className="auth-form" onSubmit={handleRegister}>
+          <div className="input-group">
+            <label>Username</label>
+            <input
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
-        </div>
-        <div>
-          <label>Salary/h:</label>
-          <input
-            type="text"
-            value={eurosPerHour}
-            onChange={(e) => setEurosPerHour(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Extra Hours Salary/h:</label>
-          <input
-            type="text"
-            value={eurosPerExtraHours}
-            onChange={(e) => setEurosPerExtraHours(e.target.value)}
-          />
-        </div>
-        {error && <p className="auth-error">{error}</p>}
-        {successMessage && <p className="auth-success">{successMessage}</p>}
-        <button type="submit">Registrar</button>
-        <button type="button" onClick={handleLogin}>
-          Login
-        </button>
-      </form>
+          <div className="input-group">
+            <label>First Name</label>
+            <input
+              type="text"
+              placeholder="Enter your first name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <label>Last Name</label>
+            <input
+              type="text"
+              placeholder="Enter your last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <label>Confirm Password</label>
+            <input
+              type="password"
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <label>Schedule</label>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  name="schedule"
+                  value="normal"
+                  checked={!isFlexible}
+                  onChange={() => setIsFlexible(false)}
+                />
+                Normal
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="schedule"
+                  value="flexible"
+                  checked={isFlexible}
+                  onChange={() => setIsFlexible(true)}
+                />
+                Flexible
+              </label>
+            </div>
+          </div>
+          <div className="input-group">
+            <label>Salary/h</label>
+            <input
+              type="text"
+              value={eurosPerHour}
+              onChange={(e) => setEurosPerHour(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <label>Extra Hours Salary/h</label>
+            <input
+              type="text"
+              value={eurosPerExtraHours}
+              onChange={(e) => setEurosPerExtraHours(e.target.value)}
+            />
+          </div>
+          {error && <p className="auth-error">{error}</p>}
+          {successMessage && <p className="auth-success">{successMessage}</p>}
+          <button type="submit" className="submit-button">Register</button>
+          <button type="button" className="link-button" onClick={handleLogin}>
+            Already have an account? Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

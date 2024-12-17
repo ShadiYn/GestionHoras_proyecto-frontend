@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { userDetails, updateUserDetails, updatePassword } from "../api/api";
 import { useNavigate } from "react-router-dom";
-import "../app/Home.css";
+import "../app/Profile.css";
 import Modal from "../components/Modal";
 
 const Profile = () => {
@@ -133,8 +133,8 @@ const Profile = () => {
   };
 
   return (
-    <div className="home-container">
-      <nav className="navbar">
+    <>
+    <nav className="navbar">
         <div className="navbar-links">
           <button className="nav-btn" onClick={handleHomeButton}>
             Home
@@ -145,7 +145,9 @@ const Profile = () => {
         </div>
         <p className="welcome">Welcome, {userInfo.name}</p>
       </nav>
-      <div class="user-info-container">
+    <div className="home-container">
+      
+      <div className="user-info-container">
         <div>
           <label>Name:</label>
           {isEditing ? (
@@ -211,7 +213,7 @@ const Profile = () => {
             `${userInfo.eurosPerExtraHours} €`
           )}
         </div>
-        <div class="schedule-container">
+        <div className="schedule-container">
           <label>
             Flexible
             <input
@@ -238,12 +240,12 @@ const Profile = () => {
         {isEditing ? (
           <div>
             <button onClick={handleEdit}>Save Changes</button>
-            <button onClick={handleCancel} class="cancel-button">
+            <button onClick={handleCancel} className="cancel-button">
               Cancel
             </button>
           </div>
         ) : (
-          <button onClick={() => setIsEditing(true)} class="button-group">
+          <button onClick={() => setIsEditing(true)} className="button-group">
             Edit Profile
           </button>
         )}
@@ -291,6 +293,8 @@ const Profile = () => {
         </div>
       </div>
     </div>
+    </>
+    
   );
 };
 
