@@ -98,6 +98,12 @@ const calculateExtraHours = () => {
   const handleCheckAndCreate = async () => {
     try {
       const response = await createWorkDayWithFirstInterval();
+      if (response === "User is flexible.") {
+
+       // handleSubmit();
+        setStatusMessage(response.data);
+        console.log("Operación exitosa:", response.data);
+      }
       if (response.status === 201) {
         setStatusMessage(response.data);
         console.log("Operación exitosa:", response.data);
