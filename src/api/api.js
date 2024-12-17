@@ -118,11 +118,9 @@ export const getAllIntervals = async () => {
 export const handleCheckOut = async (intervalId) => {
   try {
     const endTime = await baseUrl.get(`/intervals/end/${intervalId}`);
-    alert("Check-out registrado!");
     return endTime;
   } catch (error) {
     console.error("Error al registrar el check-out:", error);
-    alert("Error al registrar el check-out.");
   }
 };
 

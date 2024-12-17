@@ -17,9 +17,11 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true); 
   const [unattended, setUnattended] = useState(27); 
   const [, setLoading]=useState(true);
-    const [extraHours, setExtraHours] = useState(0);
+    const [, setExtraHours] = useState(0);
 const [totalToCharge, setTotalToCharge] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
+
+
 
 
 // UseEffect para obtener los datos del usuario cuando se monte el componente
@@ -42,8 +44,6 @@ const [totalToCharge, setTotalToCharge] = useState(0);
 
     fetchUserDetails();
   }, []);
-
-
 
 
 useEffect(() => {
@@ -350,22 +350,21 @@ useEffect(() => {
           <button className="nav-btn logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>
+<h1 className='titleWelcome'>Bienvenido/a, {userInfo ? userInfo.name : 'Cargando...'} </h1>
+   {/* Check-in and Check-out Buttons */}
+<div className="action-buttons">
+  <div className="home">
+   
+    <button className="check-in-btn" onClick={handleCheckAndCreate}>Registrar Check-in</button>
+    {statusMessage && <p>{statusMessage}</p>}
+  </div>
+    
+  <div>
+    <button className="check-out-btn" onClick={handleCheckOutClick}>Cerrar Intervalo</button>
+    {error && <p style={{ color: 'red' }}>{error}</p>}
+  </div>
+</div>
 
-      {/* Check-in and Check-out Buttons */}
-      <div className="action-buttons">
-        <div className="home">
-          <h1>Gestión de WorkDays</h1>
-          <button onClick={handleCheckAndCreate}>Registrar Check-in</button>
-          {statusMessage && <p>{statusMessage}</p>}
-        </div>
-
-        <div>
-          <h1>Cerrar Intervalo</h1>
-          <p>Intervalo ID: {intervalId}</p>
-          <button onClick={handleCheckOutClick}>Cerrar Intervalo</button>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-        </div>
-      </div>
 
 
 
@@ -394,10 +393,7 @@ useEffect(() => {
       </div>
 
       {/* Explanation Section */}
-      <div className="explicacion">
-        <p>Se podrán hacer más de un check-in/check-out para contar los descansos realizados</p>
-        <p>Finalmente, una tarjeta que implementa las horas trabajadas ese día</p>
-      </div>
+      
     </div>
   );
 };

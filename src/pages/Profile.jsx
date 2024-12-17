@@ -145,7 +145,7 @@ const Profile = () => {
         </div>
         <p className="welcome">Welcome, {userInfo.name}</p>
       </nav>
-      <div class="user-info-container">
+      <div className="user-info-container">
         <div>
           <label>Name:</label>
           {isEditing ? (

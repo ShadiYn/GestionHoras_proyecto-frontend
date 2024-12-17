@@ -1,26 +1,29 @@
 /* Home.css */
 
+/* Contenedor principal para la página */
 .home-container {
     font-family: Arial, sans-serif;
     padding: 20px;
     background-color: #f4f7fc;
-  }
-  
-  .navbar {
+}
+
+/* Navbar */
+.navbar {
     background-color: #007bff;
     padding: 10px;
     display: flex;
-    justify-content: flex-start; 
+    justify-content: space-between;
     align-items: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .navbar-links {
+    margin-bottom: 20px;
+}
+
+.navbar-links {
     display: flex;
     gap: 15px;
-  }
-  
-  .nav-btn {
+}
+
+.nav-btn {
     padding: 10px 15px;
     background-color: #ffffff;
     border: none;
@@ -28,29 +31,218 @@
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
-  }
-  
-  .nav-btn:hover {
+}
+
+.nav-btn:hover {
     background-color: #0056b3;
     color: white;
-  }
-  
-  .logout-btn {
+}
+
+.logout-btn {
     background-color: #dc3545;
     color: white;
-  }
-  
-  .logout-btn:hover {
+}
+
+.logout-btn:hover {
     background-color: #c82333;
-  }
-  
-  .action-buttons {
+}
+
+/* Sección de botones de acción */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.titleWelcome {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+/* Estilo para los botones de Check-in y Check-out */
+.check-in-btn, .check-out-btn {
+    padding: 12px 25px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.check-in-btn {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+}
+
+.check-in-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.check-out-btn {
+    background-color: #f44336; /* Rojo */
+    color: white;
+}
+
+.check-out-btn:hover {
+    background-color: #da190b;
+    transform: scale(1.05);
+}
+
+/* Tarjetas de información */
+.info-cards {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+.card h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #333;
+}
+
+.card p {
+    color: #666;
+}
+
+/* Footer */
+.footer {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 40px;
+    text-align: center;
+}
+
+.footer h2 {
+    font-size: 22px;
+    color: #007bff;
+}
+
+.footer p {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Explicación adicional */
+.explicacion {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 40px;
+    text-align: center;
+}
+
+.explicacion p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Contenedor de usuario */
+.user-info-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Información del usuario */
+.user-info-container div {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333333;
+}
+
+.user-info-container label {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+/* Inputs en el contenedor de usuario */
+.user-info-container input[type="text"],
+.user-info-container input[type="number"] {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 300px;
+    box-sizing: border-box;
+}
+
+/* Botones en el contenedor de usuario */
+.user-info-container button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.user-info-container button:hover {
+    background-color: #0056b3;
+}
+
+/* Checkbox en el contenedor de usuario */
+.user-info-container input[type="checkbox"] {
+    margin-left: 5px;
+}
+
+.user-info-container label input[type="checkbox"] {
+    margin-left: 5px;
+}
+
+/* Contenedor de horario */
+.schedule-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Botón de cancelación */
+.cancel-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #dc3545;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
+}
+
+/* Grupo de botones */
+.button-group {
     display: flex;
     gap: 10px;
-    margin: 20px 0;
-  }
-  
-  .action-btn {
+    margin-bottom: 20px; /* Aumento del espacio entre botones */
+}
+
+/* Estilo para los botones de acción generales */
+.action-btn {
     padding: 15px 25px;
     background-color: #28a745;
     border: none;
@@ -59,163 +251,18 @@
     color: white;
     font-size: 18px;
     transition: background-color 0.3s;
-  }
-  
-  .action-btn:hover {
-    background-color: #218838;
-  }
-  
-  .info-cards {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 40px;
-  }
-  
-  .card {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    flex: 1;
-  }
-  
-  .card h3 {
-    margin-bottom: 15px;
-    font-size: 20px;
-    color: #333;
-  }
-  
-  .card p {
-    color: #666;
-  }
-  
-  .footer {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
-  }
-  
-  .footer h2 {
-    font-size: 22px;
-    color: #007bff;
-  }
-  
-  .footer p {
-    font-size: 16px;
-    color: #333;
-  }
-  
-  .explicacion {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 40px;
-  }
-  
-  .explicacion p {
-    font-size: 16px;
-    color: #555;
-  }
-  
-  .welcome {
+}
 
+.action-btn:hover {
+    background-color: #218838;
+}
+
+/* Para el contenedor de bienvenida */
+.welcome {
     font-size: 16px;
     font-family: Arial, Helvetica, sans-serif;
     color: white;
     margin-left: auto;
-  }
-
-    /* Contenedor principal */
-    .user-info-container {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: #ffffff;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      font-family: Arial, sans-serif;
-    }
-  
-    /* Títulos y texto */
-    .user-info-container div {
-      margin-bottom: 10px;
-      font-size: 16px;
-      color: #333333;
-    }
-  
-    .user-info-container label {
-      font-weight: bold;
-      margin-right: 8px;
-    }
-  
-    .user-info-container input[type="text"],
-    .user-info-container input[type="number"] {
-      padding: 6px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      width: 100%;
-      max-width: 300px;
-      box-sizing: border-box;
-    }
-  
-    /* Botones */
-    .user-info-container button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 4px;
-      background-color: #007bff;
-      color: #ffffff;
-      cursor: pointer;
-      font-size: 14px;
-    }
-  
-    .user-info-container button:hover {
-      background-color: #0056b3;
-    }
-  
-    /* Checkbox */
-    .user-info-container input[type="checkbox"] {
-      margin-left: 5px;
-    }
-  
-    .user-info-container label input[type="checkbox"] {
-      margin-left: 5px;
-    }
-  
-    /* Flexibilidad del diseño */
-    .schedule-container {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-  
-    .schedule-container label {
-      display: flex;
-      align-items: center;
-    }
-
-        .cancel-button {
-          padding: 10px 15px;
-          border: none;
-          border-radius: 4px;
-          background-color: #dc3545;
-          color: #ffffff;
-          cursor: pointer;
-          font-size: 14px;
-          margin-left: 10px;
-        }
-    
-        .cancel-button:hover {
-          background-color: #c82333;
-        }
-
-                .button-group {
-                  display: flex;
-                  margin-bottom: 5px;
-                  /* Espacio entre los botones */
-                }
-        
+    text-align: center;
+    margin-top: 20px;
+}
