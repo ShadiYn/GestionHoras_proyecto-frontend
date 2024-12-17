@@ -38,41 +38,47 @@ const Login = () => {
 
   return (
     <div className="auth-container elegant-login">
-      <div className="login-card">
-        <h2 className="login-header">Welcome Back</h2>
-        <form className="auth-formLogin" onSubmit={handleLogin}>
-          <div className="input-group">
-            <label>Username</label>
-            <input
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          <div className="input-group">
-            <label>Password</label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {error && <p className="auth-error">{error}</p>}
-          <button type="submit" className="login-button">
-            Login
-          </button>
-          <button
-            type="button"
-            className="register-button"
-            onClick={handleRegister}
-          >
-            Register
-          </button>
-        </form>
+      <div className="login-card-container">
+        {/* Logo al lado del formulario */}
+        <div className="login-card-logo">
+        </div>
+        <div className="login-card">
+          <img src="/logo_img.png" alt="Logo" className="LogoImage" />
+
+          <form className="auth-formLogin" onSubmit={handleLogin}>
+            <div className="input-group">
+              <label>Username</label>
+              <input
+                type="text"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label>Password</label>
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            {error && <p className="auth-error">{error}</p>}
+            <button type="submit" className="login-button">
+              Login
+            </button>
+            <button
+              type="button"
+              className="register-button"
+              onClick={handleRegister}
+            >
+              Register
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

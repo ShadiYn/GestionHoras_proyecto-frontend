@@ -8,6 +8,15 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.login-card-container {
+  display: flex; /* Alineación horizontal de logo y formulario */
+  justify-content: center;
+  align-items: center;
+  max-width: 900px; /* Ajusta el tamaño máximo si es necesario */
+  width: 100%;
+  padding: 20px;
+}
+
 .login-card {
   background: #ffffff;
   padding: 2rem;
@@ -19,6 +28,18 @@
   animation: fadeIn 0.8s ease-out;
 }
 
+.login-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px; /* Espacio entre el formulario y el logo */
+}
+
+.LogoImage {
+  width: 250px; /* Ajusta el tamaño del logo */
+  height: auto;
+}
+
 /* Header */
 .login-header {
   font-size: 1.8rem;
@@ -28,7 +49,7 @@
 }
 
 /* Formulario de Login con una sola columna */
-.auth-formLogin{
+.auth-formLogin {
   display: grid;
   grid-template-columns: 1fr; /* Solo una columna */
   padding-right: 20px;

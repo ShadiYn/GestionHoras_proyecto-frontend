@@ -379,7 +379,7 @@ useEffect(() => {
     <div className='card'>
       <h3>Total worked hours:</h3>
       <p>{totalHours.toFixed(2)} Hours</p>
-      <img src="/logo_img.png" alt="Total Hours" className="card-image" />
+<img src="/logo_img.png" alt="Total Hours" className="card-image" />
 
     </div>
 
