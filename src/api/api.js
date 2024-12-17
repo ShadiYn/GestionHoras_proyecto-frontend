@@ -425,6 +425,33 @@ export const createWorkDayWithFirstInterval = async () => {
   }
 };
 
+export const createWorkdayflexible = async (hours) => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      throw new Error(
+        "No se encontró un token de autenticación. Inicia sesión nuevamente."
+      );
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Basic ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    console.log("Configuración de la solicitud:", config);
+
+    // Crear el WorkDay y el primer intervalo usando el endpoint del backend
+    const response = await baseUrl.post(
+      "/workdays/createworkdayflexible",
+      8,
+      config
+    );
+    return response.data;
+  
+};
+
 export const getNumberUnattended = async () => {
   try {
     const token = localStorage.getItem("authToken");
