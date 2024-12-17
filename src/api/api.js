@@ -298,6 +298,8 @@ export const getUserIntervals = async () => {
 };
 
 
+
+
 // api.js
 
 // Si 'fetchTotalHours' está definida en este archivo, asegúrate de exportarla

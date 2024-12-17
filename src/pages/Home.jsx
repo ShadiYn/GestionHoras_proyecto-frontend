@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from "../providers/UserProvider";
 import '../app/Home.css'; 
-import {getNumberUnattended, getUserIntervals,     getAllIntervals, getCurrentInterval, createWorkDayWithFirstInterval, handleCheckOut, getWorkDaysForCurrentMonth, getIntervalsForWorkDay} from '../api/api';
+import {getNumberUnattended, getUserIntervals, getAllIntervals, getCurrentInterval, createWorkDayWithFirstInterval, handleCheckOut, getWorkDaysForCurrentMonth, getIntervalsForWorkDay, userDetails} from '../api/api';
 
 const Home = () => {
   const { setUser } = useUserContext();
@@ -16,7 +16,84 @@ const Home = () => {
   const [statusMessage, setStatusMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true); 
   const [unattended, setUnattended] = useState(27); 
-  const [, setLoading]=useState(true)
+  const [, setLoading]=useState(true);
+    const [extraHours, setExtraHours] = useState(0);
+const [totalToCharge, setTotalToCharge] = useState(0);
+  const [userInfo, setUserInfo] = useState(null);
+
+
+// UseEffect para obtener los datos del usuario cuando se monte el componente
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        if (token) {
+          const userData = await userDetails(token);  // Suponiendo que userDetails es la función para obtener datos del backend.
+          setUserInfo(userData);
+        } else {
+          console.log("Token no encontrado");
+        }
+      } catch (error) {
+        console.error("Error al obtener los detalles del usuario:", error);
+      } finally {
+        setIsLoading(false);  // Cambiar estado de carga a false después de recibir los datos.
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
+
+
+
+useEffect(() => {
+  if (userInfo && userInfo.requiredHours != null) {
+    const eurosPerHour = userInfo.eurosPerHour || 0;
+    const eurosExtraPerHour = userInfo.eurosPerExtraHours || 0;
+
+    const extra = calculateExtraHours();
+    const totalHoursMinusExtra = totalHours - extra;
+    const total = (totalHoursMinusExtra * eurosPerHour) + (extra * eurosExtraPerHour);
+
+    setExtraHours(extra);
+    setTotalToCharge(total);
+
+    // También puedes establecer las horas restantes aquí si lo necesitas
+    const horasMes = userInfo.requiredHours * 4;
+    const horasPorCumplir = horasMes - totalHours;
+    console.log('Horas restantes:', horasPorCumplir);
+  }
+}, [userInfo, totalHours]);
+
+
+useEffect(() => {
+  const fetchUserMonthlyHours = async () => {
+    if (userId) {
+      await fetchAndCalculateUserMonthlyHours(userId);
+    }
+  };
+
+  fetchUserMonthlyHours();
+}, [userId]);
+
+
+
+
+
+const calculateExtraHours = () => {
+  if (!userInfo || userInfo.requiredHours == null) {
+    return 0;  // Si userInfo es null o requiredHours no está definido, retornamos 0
+  }
+
+  const MonthHours = userInfo.requiredHours * 4; 
+  if (totalHours > MonthHours) {
+    const extraTotal = totalHours - MonthHours;
+    console.log('Respuesta horas extra:', extraTotal);
+    return extraTotal;
+  }
+  return 0; // Si no hay horas extra
+};
+
 
   const handleCheckAndCreate = async () => {
     try {
@@ -77,13 +154,10 @@ const Home = () => {
 const fetchAndCalculateUserMonthlyHours = async () => {
   try {
     const response = await getUserIntervals(); // Llamada a la API
-    console.log("Respuesta de la API:", response);
 
     let intervals2 = response.data || []; // Asignamos un array vacío si no hay datos
-    console.log("Intervalos completos:", intervals2); // Verifica todos los intervalos obtenidos
 
     if (!Array.isArray(intervals2)) {
-      console.error("intervals2 no es un array", intervals2);
       intervals2 = []; // Asegurarnos de que sea un array
     }
 
@@ -303,14 +377,14 @@ useEffect(() => {
         </div>
         <div className="card">
           <h3>Horas Complementarias</h3>
-          <p>dependiendo de las horas que tenga</p>
+          <p>{calculateExtraHours().toFixed(2)} HORAS</p>
         </div>
       </div>
 
       {/* Footer */}
       <div className="footer">
         <h2>Total aproximado a cobrar:</h2>
-        <p>Total a cobrar = Horas mes * precio fijo + Horas Complementarias * PrecioHora complementaria</p>
+        <p>{totalToCharge.toFixed(2)}€</p>
       </div>
 
       {/* Explanation Section */}
