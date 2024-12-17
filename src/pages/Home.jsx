@@ -3,18 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../providers/UserProvider";
 import "../app/Home.css";
 import {
+  createWorkdayflexible,
   getNumberUnattended,
   getUserIntervals,
   getAllIntervals,
   getCurrentInterval,
   createWorkDayWithFirstInterval,
-  createWorkdayflexible,
   handleCheckOut,
   getWorkDaysForCurrentMonth,
   getIntervalsForWorkDay,
+  userDetails,
 } from "../api/api";
-import '../app/Home.css'; 
-import {getNumberUnattended, getUserIntervals, getAllIntervals, getCurrentInterval, createWorkDayWithFirstInterval, handleCheckOut, getWorkDaysForCurrentMonth, getIntervalsForWorkDay, userDetails} from '../api/api';
 
 const Home = () => {
   const { setUser } = useUserContext();
@@ -26,23 +25,22 @@ const Home = () => {
   const userId = user?.id;
   const [error, setError] = useState(null);
   const [statusMessage, setStatusMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true); 
-  const [unattended, setUnattended] = useState(27); 
-  const [, setLoading]=useState(true);
-    const [, setExtraHours] = useState(0);
-const [totalToCharge, setTotalToCharge] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [unattended, setUnattended] = useState(27);
+  const [, setLoading] = useState(true);
+  const [, setExtraHours] = useState(0);
+  const [totalToCharge, setTotalToCharge] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
+  const [isFlexibleInputVisible, setFlexibleInputVisible] = useState(false);
+  const [flexibleInput, setFlexibleInput] = useState(""); // State to store the input value
 
-
-
-
-// UseEffect para obtener los datos del usuario cuando se monte el componente
+  // UseEffect para obtener los datos del usuario cuando se monte el componente
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const token = localStorage.getItem("authToken");
         if (token) {
-          const userData = await userDetails(token);  // Suponiendo que userDetails es la función para obtener datos del backend.
+          const userData = await userDetails(token); // Suponiendo que userDetails es la función para obtener datos del backend.
           setUserInfo(userData);
         } else {
           console.log("Token no encontrado");
@@ -50,62 +48,66 @@ const [totalToCharge, setTotalToCharge] = useState(0);
       } catch (error) {
         console.error("Error al obtener los detalles del usuario:", error);
       } finally {
-        setIsLoading(false);  // Cambiar estado de carga a false después de recibir los datos.
+        setIsLoading(false); // Cambiar estado de carga a false después de recibir los datos.
       }
     };
 
     fetchUserDetails();
   }, []);
 
+  useEffect(() => {
+    if (userInfo && userInfo.requiredHours != null) {
+      const eurosPerHour = userInfo.eurosPerHour || 0;
+      const eurosExtraPerHour = userInfo.eurosPerExtraHours || 0;
 
-useEffect(() => {
-  if (userInfo && userInfo.requiredHours != null) {
-    const eurosPerHour = userInfo.eurosPerHour || 0;
-    const eurosExtraPerHour = userInfo.eurosPerExtraHours || 0;
+      const extra = calculateExtraHours();
+      const totalHoursMinusExtra = totalHours - extra;
+      const total =
+        totalHoursMinusExtra * eurosPerHour + extra * eurosExtraPerHour;
 
-    const extra = calculateExtraHours();
-    const totalHoursMinusExtra = totalHours - extra;
-    const total = (totalHoursMinusExtra * eurosPerHour) + (extra * eurosExtraPerHour);
+      setExtraHours(extra);
+      setTotalToCharge(total);
 
-    setExtraHours(extra);
-    setTotalToCharge(total);
-
-    // También puedes establecer las horas restantes aquí si lo necesitas
-    const horasMes = userInfo.requiredHours * 4;
-    const horasPorCumplir = horasMes - totalHours;
-    console.log('Horas restantes:', horasPorCumplir);
-  }
-}, [userInfo, totalHours]);
-
-
-useEffect(() => {
-  const fetchUserMonthlyHours = async () => {
-    if (userId) {
-      await fetchAndCalculateUserMonthlyHours(userId);
+      // También puedes establecer las horas restantes aquí si lo necesitas
+      const horasMes = userInfo.requiredHours * 4;
+      const horasPorCumplir = horasMes - totalHours;
+      console.log("Horas restantes:", horasPorCumplir);
     }
+  }, [userInfo, totalHours]);
+
+  useEffect(() => {
+    const fetchUserMonthlyHours = async () => {
+      if (userId) {
+        await fetchAndCalculateUserMonthlyHours(userId);
+      }
+    };
+
+    fetchUserMonthlyHours();
+  }, [userId]);
+
+  const calculateExtraHours = () => {
+    if (!userInfo || userInfo.requiredHours == null) {
+      return 0; // Si userInfo es null o requiredHours no está definido, retornamos 0
+    }
+
+    const MonthHours = userInfo.requiredHours * 4;
+    if (totalHours > MonthHours) {
+      const extraTotal = totalHours - MonthHours;
+      console.log("Respuesta horas extra:", extraTotal);
+      return extraTotal;
+    }
+    return 0; // Si no hay horas extra
   };
-
-  fetchUserMonthlyHours();
-}, [userId]);
-
-
-
-
-
-const calculateExtraHours = () => {
-  if (!userInfo || userInfo.requiredHours == null) {
-    return 0;  // Si userInfo es null o requiredHours no está definido, retornamos 0
-  }
-
-  const MonthHours = userInfo.requiredHours * 4; 
-  if (totalHours > MonthHours) {
-    const extraTotal = totalHours - MonthHours;
-    console.log('Respuesta horas extra:', extraTotal);
-    return extraTotal;
-  }
-  return 0; // Si no hay horas extra
-};
-
+  const handleFlexible = () => {
+    setFlexibleInputVisible(true); // Show the input and button
+  };
+  // Handle the button click to process the input
+  const handleFlexibleSubmit = () => {
+    createWorkdayflexible(flexibleInput);
+    console.log("Flexible input value:", flexibleInput);
+    setFlexibleInput(""); // Clear the input field
+    setFlexibleInputVisible(false); // Hide the input and button after submission
+  };
 
   const handleCheckAndCreate = async () => {
     try {
@@ -113,7 +115,6 @@ const calculateExtraHours = () => {
       if (response === "User is flexible.") {
         handleFlexible();
         setStatusMessage(response.data);
-        console.log("Operación exitosa:", response.data);
       }
       if (response.status === 201) {
         setStatusMessage(response.data);
@@ -170,16 +171,15 @@ const calculateExtraHours = () => {
     return date;
   };
 
+  const fetchAndCalculateUserMonthlyHours = async () => {
+    try {
+      const response = await getUserIntervals(); // Llamada a la API
 
-const fetchAndCalculateUserMonthlyHours = async () => {
-  try {
-    const response = await getUserIntervals(); // Llamada a la API
+      let intervals2 = response.data || []; // Asignamos un array vacío si no hay datos
 
-    let intervals2 = response.data || []; // Asignamos un array vacío si no hay datos
-
-    if (!Array.isArray(intervals2)) {
-      intervals2 = []; // Asegurarnos de que sea un array
-    }
+      if (!Array.isArray(intervals2)) {
+        intervals2 = []; // Asegurarnos de que sea un array
+      }
 
       // Filtramos los intervalos (por ejemplo, para fechas válidas)
       const validIntervals = intervals2.filter((interval) => {
@@ -355,7 +355,7 @@ const fetchAndCalculateUserMonthlyHours = async () => {
   };
   return (
     <>
-    {/* Navbar */}
+      {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-links">
           <button className="nav-btn" onClick={() => navigate("/calendar")}>
@@ -370,55 +370,65 @@ const fetchAndCalculateUserMonthlyHours = async () => {
         </div>
       </nav>
       <div className="home-container">
-      
-<h1 className='titleWelcome'>Bienvenido/a, {userInfo ? userInfo.name : 'Cargando...'} </h1>
-   {/* Check-in and Check-out Buttons */}
-<div className="action-buttons">
-  <div className="home">
-   
-    <button className="check-in-btn" onClick={handleCheckAndCreate}>Registrar Check-in</button>
-    {statusMessage && <p>{statusMessage}</p>}
-  </div>
-    
-  <div>
-    <button className="check-out-btn" onClick={handleCheckOutClick}>Cerrar Intervalo</button>
-    {error && <p style={{ color: 'red' }}>{error}</p>}
-  </div>
-</div>
+        <h1 className="titleWelcome">
+          Bienvenido/a, {userInfo ? userInfo.name : "Cargando..."}{" "}
+        </h1>
+        {/* Check-in and Check-out Buttons */}
+        <div className="action-buttons">
+          <div className="home">
+            <button className="check-in-btn" onClick={handleCheckAndCreate}>
+              Registrar Check-in
+            </button>
+            {statusMessage && <p>{statusMessage}</p>}
+          </div>
 
-
-
-
-      {/* Info Cards */}
-      <div className="info-cards">
-        <div className="card">
-          <h3>Total de horas trabajadas este mes:</h3>
-          <p>{totalHours.toFixed(2)} horas</p>
+          <div>
+            <button className="check-out-btn" onClick={handleCheckOutClick}>
+              Cerrar Intervalo
+            </button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+          </div>
         </div>
-
-        <div className="card">
-          <h3>Ausencias</h3>
-          <p>{unattended}</p>
-        </div>
-        <div className="card">
-          <h3>Horas Complementarias</h3>
-          <p>{calculateExtraHours().toFixed(2)} HORAS</p>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="footer">
-        <h2>Total aproximado a cobrar:</h2>
-        <p>{totalToCharge.toFixed(2)}€</p>
-      </div>
-
-      {/* Explanation Section */}
-      
+        {isFlexibleInputVisible && (
+    <div className="flexible-input-container">
+      <input
+        type="number"
+        value={flexibleInput}
+        onChange={(e) => setFlexibleInput(e.target.value)}
+        placeholder="Enter value..."
+        className="flexible-input"
+      />
+      <button onClick={handleFlexibleSubmit} className="flexible-submit-btn">
+        Submit
+      </button>
     </div>
+  )}
+        {/* Info Cards */}
+        <div className="info-cards">
+          <div className="card">
+            <h3>Total de horas trabajadas este mes:</h3>
+            <p>{totalHours.toFixed(2)} horas</p>
+          </div>
 
+          <div className="card">
+            <h3>Ausencias</h3>
+            <p>{unattended}</p>
+          </div>
+          <div className="card">
+            <h3>Horas Complementarias</h3>
+            <p>{calculateExtraHours().toFixed(2)} HORAS</p>
+          </div>
+        </div>
 
+        {/* Footer */}
+        <div className="footer">
+          <h2>Total aproximado a cobrar:</h2>
+          <p>{totalToCharge.toFixed(2)}€</p>
+        </div>
+
+        {/* Explanation Section */}
+      </div>
     </>
-    
   );
 };
 

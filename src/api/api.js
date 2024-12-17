@@ -445,9 +445,10 @@ export const createWorkdayflexible = async (hours) => {
     // Crear el WorkDay y el primer intervalo usando el endpoint del backend
     const response = await baseUrl.post(
       "/workdays/createworkdayflexible",
-      8,
+      hours,
       config
     );
+    console.log("Flexible input value:", hours);
     return response.data;
   
 };
