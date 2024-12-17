@@ -44,6 +44,7 @@ const Register = () => {
         eurosPerHour: eurosPerHourFloat,
         eurosPerExtraHours: eurosPerExtraHoursFloat,
         isFlexible,
+        requiredHours,
       });
       setSuccessMessage("Registro exitoso. Puedes iniciar sesión.");
       navigate("/login"); // Redirect to login page after successful registration
