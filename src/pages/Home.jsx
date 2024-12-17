@@ -342,27 +342,31 @@ useEffect(() => {
   };
   return (
     <>
+
     {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-links">
-          <button className="nav-btn" onClick={() => navigate("/calendar")}>Calendario</button>
-          <button className="nav-btn" onClick={() => navigate("/Perfil")}>Perfil</button>
+          <button className="nav-btn" onClick={() => navigate("/calendar")}>Calendar</button>
+          <button className="nav-btn" onClick={() => navigate("/Perfil")}>Profile</button>
           <button className="nav-btn logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>
       <div className="home-container">
-      
-<h1 className='titleWelcome'>Bienvenido/a, {userInfo ? userInfo.name : 'Cargando...'} </h1>
+
+        <div className='centered'>
+
+    
+        <h1 className='titleWelcome'>Welcome, {userInfo ? userInfo.name : 'Loading...'} </h1>
    {/* Check-in and Check-out Buttons */}
 <div className="action-buttons">
   <div className="home">
-   
-    <button className="check-in-btn" onClick={handleCheckAndCreate}>Registrar Check-in</button>
+  
+    <button className="check-in-btn" onClick={handleCheckAndCreate}>Check-in</button>
     {statusMessage && <p>{statusMessage}</p>}
   </div>
     
   <div>
-    <button className="check-out-btn" onClick={handleCheckOutClick}>Cerrar Intervalo</button>
+    <button className="check-out-btn" onClick={handleCheckOutClick}>Check-out</button>
     {error && <p style={{ color: 'red' }}>{error}</p>}
   </div>
 </div>
@@ -373,30 +377,33 @@ useEffect(() => {
       {/* Info Cards */}
       <div className="info-cards">
     <div className='card'>
-      <h3>Total de horas trabajadas este mes:</h3>
-      <p>{totalHours.toFixed(2)} horas</p>
+      <h3>Total worked hours:</h3>
+      <p>{totalHours.toFixed(2)} Hours</p>
     </div>
 
 
         <div className="card">
-          <h3>Ausencias</h3>
+          <h3>Absences</h3>
           <p>{unattended}</p>
         </div>
         <div className="card">
-          <h3>Horas Complementarias</h3>
-          <p>{calculateExtraHours().toFixed(2)} HORAS</p>
+          <h3>Overtime</h3>
+          <p>{calculateExtraHours().toFixed(2)} Hours</p>
         </div>
       </div>
 
       {/* Footer */}
       <div className="footer">
-        <h2>Total aproximado a cobrar:</h2>
+        <h2>Aproximated to be charged:</h2>
         <p>{totalToCharge.toFixed(2)}€</p>
       </div>
 
       {/* Explanation Section */}
       
     </div>
+
+        </div>
+  
 
 
     </>

@@ -43,9 +43,8 @@ body {
 .welcome {
   color: white;
   text-align: center;
- margin-right: 79px;
- margin-top: 20px;
- font-size: 35px;
+  margin-right: 20px;
+  font-size: 30px;
 }
 
 .user-info-container {

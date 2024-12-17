@@ -42,7 +42,7 @@ const Profile = () => {
   }, []);
 
   //TODO: Convertir en spinner.
-  if (!userInfo) return <div>Cargando...</div>;
+  if (!userInfo) return <div>Loading...</div>;
 
   const handleChange = (e) => {
     const { name } = e.target;
@@ -75,7 +75,7 @@ const Profile = () => {
 
   const handlePasswordSubmit = async () => {
     if (passwordData.password !== passwordData.confirmPassword) {
-      setModalMessage("Las contraseñas nuevas no coinciden.");
+      setModalMessage("New passwords aren't simillar");
       return;
     }
 
@@ -88,12 +88,12 @@ const Profile = () => {
       const response = await updatePassword(payload); // Llamada al backend
       if (response) {
         setModalPassword(false); // Cierra el modal
-        setModalMessage("Contraseña actualizada correctamente."); // Mensaje de éxito
+        setModalMessage("Password updated correctly"); // Mensaje de éxito
       } else {
-        setModalMessage("Error al actualizar la contraseña.");
+        setModalMessage("Error updating passowrd");
       }
     } catch (error) {
-      alert("Error al actualizar la contraseña. Intenta nuevamente.");
+      alert("Couldn't update password, try later");
       console.error(error);
     }
   };

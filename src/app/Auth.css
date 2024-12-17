@@ -31,7 +31,7 @@
 .auth-formLogin{
   display: grid;
   grid-template-columns: 1fr; /* Solo una columna */
-  gap: 1.5rem; /* Espacio entre los elementos */
+  padding-right: 20px;
   grid-template-areas: 
     "username"
     "password"
@@ -63,8 +63,8 @@
 }
 
 .input-group input:focus {
-  border-color: #4facfe;
-  box-shadow: 0 0 5px rgba(79, 172, 254, 0.5);
+  border-color: #71aa72;
+  box-shadow: 0 0 5px #71aa7286;
 }
 
 /* Botones de Login y Register */
