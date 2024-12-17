@@ -134,7 +134,7 @@ const calculateExtraHours = () => {
   
       // Recargar los intervalos después del check-out
       await loadIntervals();  
-      alert("Check-out registrado correctamente!");
+    
     } catch (error) {
       console.error("Error al registrar el check-out:", error);
       alert("Hubo un error al registrar el check-out.");
@@ -379,6 +379,8 @@ useEffect(() => {
     <div className='card'>
       <h3>Total worked hours:</h3>
       <p>{totalHours.toFixed(2)} Hours</p>
+      <img src="/logo_img.png" alt="Total Hours" className="card-image" />
+
     </div>
 
 
@@ -398,14 +400,9 @@ useEffect(() => {
         <p>{totalToCharge.toFixed(2)}€</p>
       </div>
 
-      {/* Explanation Section */}
       
     </div>
-
         </div>
-  
-
-
     </>
     
   );

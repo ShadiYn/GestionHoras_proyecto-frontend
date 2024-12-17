@@ -22,6 +22,15 @@ padding: 10px;
     margin-bottom: 20px;
 }
 
+.card-image {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 80px; /* Ajusta el tamaño de la imagen */
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover; /* Asegura que la imagen se ajuste sin deformarse */
+  }
 .navbar-links {
     display: flex;
     gap: 15px;

@@ -113,7 +113,7 @@ const Profile = () => {
       setModalMessage("User updated succesfully.");
       setModal(true);
     } catch (error) {
-      setModalTitle("Error");
+      setModalTitle("Error", error);
       setModalMessage("Error updating the user.");
       setModal(true);
     }
