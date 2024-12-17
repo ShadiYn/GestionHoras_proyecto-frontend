@@ -6,12 +6,14 @@
     padding: 20px;
     background-color: #f4f7fc;
 }
+.centered{
+    justify-content: center;
+}
 
 /* Navbar */
 .navbar {
  background-color: #333;
   overflow: hidden;
-padding: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -19,6 +21,15 @@ padding: 10px;
     margin-bottom: 20px;
 }
 
+.card-image {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 80px; /* Ajusta el tamaño de la imagen */
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover; /* Asegura que la imagen se ajuste sin deformarse */
+  }
 .navbar-links {
     display: flex;
     gap: 15px;
@@ -73,12 +84,12 @@ padding: 10px;
 }
 
 .check-in-btn {
-    background-color: #4CAF50; /* Verde */
+    background-color: #a0bda1; /* Verde */
     color: white;
 }
 
 .check-in-btn:hover {
-    background-color: #45a049;
+    background-color: #a0bda1;
     transform: scale(1.05);
 }
 
@@ -101,7 +112,7 @@ padding: 10px;
 }
 
 .card {
-    background-color: #ffffff;
+    background-color: #a0bda120; /* Fondo llamativo */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -115,14 +126,14 @@ padding: 10px;
 }
 
 .card p {
-    color: #666;
+    color: black;
 }
 
 /* Footer */
 /* Footer styles */
 .footer {
-  background-color: #4caf50; /* Fondo llamativo */
-  color: white;
+  background-color: #a0bda1; /* Fondo llamativo */
+  color: black;
   text-align: center; /* Centra el texto */
   padding: 20px 0; /* Espaciado superior e inferior */
   font-size: 50px; /* Tamaño de texto para buena visibilidad */
@@ -147,7 +158,7 @@ padding: 10px;
 
 /* Explicación adicional */
 .explicacion {
-    background-color: #ffffff;
+    background-color: black;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -175,7 +186,7 @@ padding: 10px;
     border: none;
     border-radius: 4px;
     background-color: #dc3545;
-    color: white;
+    color: black;
     cursor: pointer;
     font-size: 14px;
     margin-left: 10px;
@@ -195,24 +206,24 @@ padding: 10px;
 /* Estilo para los botones de acción generales */
 .action-btn {
     padding: 15px 25px;
-    background-color: #28a745;
+    background-color: #a0bda1;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    color: white;
+    color: black;
     font-size: 18px;
     transition: background-color 0.3s;
 }
 
 .action-btn:hover {
-    background-color: #218838;
+    background-color: #a0bda1;
 }
 
 /* Para el contenedor de bienvenida */
 .welcome {
     font-size: 16px;
     font-family: Arial, Helvetica, sans-serif;
-    color: white;
+    color: black;
     margin-left: auto;
     text-align: center;
     margin-top: 20px;
@@ -236,7 +247,7 @@ padding: 10px;
   .flexible-submit-btn {
     padding: 5px 10px;
     background-color: #007bff;
-    color: white;
+    color: black;
     border: none;
     border-radius: 3px;
     cursor: pointer;
