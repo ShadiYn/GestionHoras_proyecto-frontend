@@ -12,6 +12,7 @@ const Register = () => {
   const [isFlexible, setIsFlexible] = useState(false);
   const [eurosPerHour, setEurosPerHour] = useState("");
   const [eurosPerExtraHours, setEurosPerExtraHours] = useState("");
+  const [requiredHours, setRequiredHours] = useState(0);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
@@ -123,15 +124,13 @@ const Register = () => {
                 Flexible
               </label>
               <div className="input-group">
-                <label>Total time</label>
+                <label>Total hours </label>
                 <input
                   type="number"
                   placeholder="80"
-                  //value={confirmPassword}
-                  //
-                  //onChange={(e) => setConfirmPassword(e.target.value)}
-                  //comprobar con booleano para si es flexible o no
-                  //required
+                  value={requiredHours}
+                  onChange={(e) => setRequiredHours(e.target.value)}
+                  required
                 />
               </div>
             </div>
