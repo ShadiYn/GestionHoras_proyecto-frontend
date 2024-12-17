@@ -64,6 +64,29 @@ const Register = () => {
       <div className="register-card">
         <h2 className="auth-header">Create an Account</h2>
         <form className="auth-form" onSubmit={handleRegister}>
+          <div>
+            <div className="input-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                placeholder="Enter your first name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                placeholder="Enter your last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          <div>
           <div className="input-group">
             <label>Username</label>
             <input
@@ -73,46 +96,8 @@ const Register = () => {
               onChange={(e) => setUsername(e.target.value)}
               required
             />
-          </div>
-          <div className="input-group">
-            <label>First Name</label>
-            <input
-              type="text"
-              placeholder="Enter your first name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="input-group">
-            <label>Last Name</label>
-            <input
-              type="text"
-              placeholder="Enter your last name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="input-group">
-            <label>Password</label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div className="input-group">
-            <label>Confirm Password</label>
-            <input
-              type="password"
-              placeholder="Confirm your password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+
+            
           </div>
           <div className="input-group">
             <label>Schedule</label>
@@ -137,28 +122,69 @@ const Register = () => {
                 />
                 Flexible
               </label>
+              <div className="input-group">
+                <label>Total time</label>
+                <input
+                  type="number"
+                  placeholder="80"
+                  //value={confirmPassword}
+                  //
+                  //onChange={(e) => setConfirmPassword(e.target.value)}
+                  //comprobar con booleano para si es flexible o no
+                  //required
+                />
+              </div>
             </div>
           </div>
-          <div className="input-group">
-            <label>Salary/h</label>
-            <input
-              type="text"
-              value={eurosPerHour}
-              onChange={(e) => setEurosPerHour(e.target.value)}
-              required
-            />
           </div>
-          <div className="input-group">
-            <label>Extra Hours Salary/h</label>
-            <input
-              type="text"
-              value={eurosPerExtraHours}
-              onChange={(e) => setEurosPerExtraHours(e.target.value)}
-            />
+          <div>
+            <div className="input-group">
+              <label>Salary/h</label>
+              <input
+                type="text"
+                value={eurosPerHour}
+                onChange={(e) => setEurosPerHour(e.target.value)}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label>Extra Hours Salary/h</label>
+              <input
+                type="text"
+                value={eurosPerExtraHours}
+                onChange={(e) => setEurosPerExtraHours(e.target.value)}
+              />
+            </div>
           </div>
+          <div>
+            <div className="input-group">
+              <label>Password</label>
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label>Confirm Password</label>
+              <input
+                type="password"
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          
+
           {error && <p className="auth-error">{error}</p>}
           {successMessage && <p className="auth-success">{successMessage}</p>}
-          <button type="submit" className="submit-button">Register</button>
+          <button type="submit" className="submit-button">
+            Register
+          </button>
           <button type="button" className="link-button" onClick={handleLogin}>
             Already have an account? Login
           </button>
