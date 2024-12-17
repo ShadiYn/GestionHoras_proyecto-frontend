@@ -341,8 +341,8 @@ useEffect(() => {
     navigate("/login");
   };
   return (
-    <div className="home-container">
-      {/* Navbar */}
+    <>
+    {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-links">
           <button className="nav-btn" onClick={() => navigate("/calendar")}>Calendario</button>
@@ -350,6 +350,8 @@ useEffect(() => {
           <button className="nav-btn logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>
+      <div className="home-container">
+      
 <h1 className='titleWelcome'>Bienvenido/a, {userInfo ? userInfo.name : 'Cargando...'} </h1>
    {/* Check-in and Check-out Buttons */}
 <div className="action-buttons">
@@ -395,6 +397,10 @@ useEffect(() => {
       {/* Explanation Section */}
       
     </div>
+
+
+    </>
+    
   );
 };
 
