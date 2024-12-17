@@ -217,3 +217,32 @@ padding: 10px;
     text-align: center;
     margin-top: 20px;
 }
+
+.flexible-input-container {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center; /* Centra el input y el botón */
+    margin-bottom: 10px;
+}
+  
+  .flexible-input {
+    padding: 5px;
+    font-size: 14px;
+  }
+  
+  
+  .flexible-submit-btn {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .flexible-submit-btn:hover {
+    background-color: #0056b3;
+  }
+  
