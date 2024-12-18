@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../providers/UserProvider";
 import "../app/Home.css";
 import {
-  createWorkdayflexible,
   getNumberUnattended,
   getUserIntervals,
   getAllIntervals,
@@ -31,8 +30,6 @@ const Home = () => {
   const [, setExtraHours] = useState(0);
   const [totalToCharge, setTotalToCharge] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
-  const [isFlexibleInputVisible, setFlexibleInputVisible] = useState(false);
-  const [flexibleInput, setFlexibleInput] = useState(""); // State to store the input value
 
   // UseEffect para obtener los datos del usuario cuando se monte el componente
   useEffect(() => {
@@ -98,23 +95,14 @@ const Home = () => {
     }
     return 0; // Si no hay horas extra
   };
-  const handleFlexible = () => {
-    setFlexibleInputVisible(true); // Show the input and button
-  };
-  // Handle the button click to process the input
-  const handleFlexibleSubmit = () => {
-    createWorkdayflexible(flexibleInput);
-    console.log("Flexible input value:", flexibleInput);
-    setFlexibleInput(""); // Clear the input field
-    setFlexibleInputVisible(false); // Hide the input and button after submission
-  };
 
   const handleCheckAndCreate = async () => {
     try {
       const response = await createWorkDayWithFirstInterval();
       if (response === "User is flexible.") {
-        handleFlexible();
+        // handleSubmit();
         setStatusMessage(response.data);
+        console.log("Operación exitosa:", response.data);
       }
       if (response.status === 201) {
         setStatusMessage(response.data);
@@ -149,7 +137,6 @@ const Home = () => {
 
       // Recargar los intervalos después del check-out
       await loadIntervals();
-      // alert("Check-out registrado correctamente!");
     } catch (error) {
       console.error("Error al registrar el check-out:", error);
       alert("Hubo un error al registrar el check-out.");
@@ -359,10 +346,10 @@ const Home = () => {
       <nav className="navbar">
         <div className="navbar-links">
           <button className="nav-btn" onClick={() => navigate("/calendar")}>
-            Calendario
+            Calendar
           </button>
           <button className="nav-btn" onClick={() => navigate("/Perfil")}>
-            Perfil
+            Profile
           </button>
           <button className="nav-btn logout-btn" onClick={handleLogout}>
             Logout
@@ -370,64 +357,55 @@ const Home = () => {
         </div>
       </nav>
       <div className="home-container">
-        <h1 className="titleWelcome">
-          Bienvenido/a, {userInfo ? userInfo.name : "Cargando..."}{" "}
-        </h1>
-        <div className="action-buttons">
-          <div className="home">
-            <button className="check-in-btn" onClick={handleCheckAndCreate}>
-              Registrar Check-in
-            </button>
-            {statusMessage && <p>{statusMessage}</p>}
-          </div>
-          <div>
-            <button className="check-out-btn" onClick={handleCheckOutClick}>
-              Cerrar Intervalo
-            </button>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-          </div>
-        </div>
-        {isFlexibleInputVisible && (
-          <div className="flexible-input-container">
-            <input
-              type="number"
-              value={flexibleInput}
-              onChange={(e) => setFlexibleInput(e.target.value)}
-              placeholder="Enter value..."
-              className="flexible-input"
-            />
-            <button
-              onClick={handleFlexibleSubmit}
-              className="flexible-submit-btn"
-            >
-              Submit
-            </button>
-          </div>
-        )}
-        {/* Info Cards */}
-        <div className="info-cards">
-          <div className="card">
-            <h3>Total de horas trabajadas este mes:</h3>
-            <p>{totalHours.toFixed(2)} horas</p>
+        <div className="centered">
+          <h1 className="titleWelcome">
+            Welcome, {userInfo ? userInfo.name : "Loading..."}{" "}
+          </h1>
+          {/* Check-in and Check-out Buttons */}
+          <div className="action-buttons">
+            <div className="home">
+              <button className="check-in-btn" onClick={handleCheckAndCreate}>
+                Check-in
+              </button>
+              {statusMessage && <p>{statusMessage}</p>}
+            </div>
+
+            <div>
+              <button className="check-out-btn" onClick={handleCheckOutClick}>
+                Check-out
+              </button>
+              {error && <p style={{ color: "red" }}>{error}</p>}
+            </div>
           </div>
 
-          <div className="card">
-            <h3>Ausencias</h3>
-            <p>{unattended}</p>
+          {/* Info Cards */}
+          <div className="info-cards">
+            <div className="card">
+              <h3>Total worked hours:</h3>
+              <p>{totalHours.toFixed(2)} Hours</p>
+              <img
+                src="/logo_img.png"
+                alt="Total Hours"
+                className="card-image"
+              />
+            </div>
+
+            <div className="card">
+              <h3>Absences</h3>
+              <p>{unattended}</p>
+            </div>
+            <div className="card">
+              <h3>Overtime</h3>
+              <p>{calculateExtraHours().toFixed(2)} Hours</p>
+            </div>
           </div>
-          <div className="card">
-            <h3>Horas Complementarias</h3>
-            <p>{calculateExtraHours().toFixed(2)} HORAS</p>
+
+          {/* Footer */}
+          <div className="footer">
+            <h2>Aproximated to be charged:</h2>
+            <p>{totalToCharge.toFixed(2)}€</p>
           </div>
         </div>
-
-        {/* Footer */}
-        <div className="footer">
-          <h2>Total aproximado a cobrar:</h2>
-          <p>{totalToCharge.toFixed(2)}€</p>
-        </div>
-
-        {/* Explanation Section */}
       </div>
     </>
   );

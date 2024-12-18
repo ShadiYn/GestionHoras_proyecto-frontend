@@ -3,7 +3,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   background: linear-gradient(to bottom right, #a0bda1, #a0bda1);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -12,7 +11,7 @@
 /* Card de Registro */
 .register-card {
   background: #fff;
-  padding: 2rem;
+  padding: 10rem;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   text-align: left;
@@ -36,7 +35,7 @@
 .auth-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem; /* Más espacio entre los elementos */
+  gap: 4rem; /* Más espacio entre los elementos */
   grid-template-areas: 
     "username password"
     "name lastName"
@@ -69,20 +68,21 @@
 }
 
 .input-group input:focus {
-  border-color: #2575fc;
-  box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
+  border-color: #71aa72;
+  box-shadow: 0 0 5px #71aa7286;
 }
 
 /* Estilo para los Radio Buttons */
 .input-group input[type="radio"] {
-  margin-right: 0.5rem; /* Espaciado a la derecha */
+  margin-right: 0.9rem; /* Espaciado a la derecha */
 }
 
 .input-group div {
   display: flex;
   align-items: center;
-  gap: 1rem; /* Espaciado entre los radio buttons */
+  gap: 2rem; /* Espaciado entre los radio buttons */
 }
+
 
 /* Botones */
 .submit-button,
