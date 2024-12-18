@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from "../providers/UserProvider";
 import '../app/Home.css'; 
-import {getNumberUnattended, getUserIntervals, getAllIntervals, getCurrentInterval, createWorkDayWithFirstInterval, handleCheckOut, getWorkDaysForCurrentMonth, getIntervalsForWorkDay, userDetails} from '../api/api';
+import {createWorkdayflexible, getNumberUnattended, getUserIntervals, getAllIntervals, getCurrentInterval, createWorkDayWithFirstInterval, handleCheckOut, getWorkDaysForCurrentMonth, getIntervalsForWorkDay, userDetails} from '../api/api';
 
 const Home = () => {
   const { setUser } = useUserContext();
@@ -20,7 +20,8 @@ const Home = () => {
     const [, setExtraHours] = useState(0);
 const [totalToCharge, setTotalToCharge] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
-
+  const [isFlexibleInputVisible, setFlexibleInputVisible] = useState(false);
+  const [flexibleInput, setFlexibleInput] = useState(""); // State to store the input value
 
 
 
@@ -94,13 +95,22 @@ const calculateExtraHours = () => {
   return 0; // Si no hay horas extra
 };
 
-
+const handleFlexible = () => {
+  setFlexibleInputVisible(true); // Show the input and button
+};
+// Handle the button click to process the input
+const handleFlexibleSubmit = () => {
+  createWorkdayflexible(flexibleInput);
+  console.log("Flexible input value:", flexibleInput);
+  setFlexibleInput(""); // Clear the input field
+  setFlexibleInputVisible(false); // Hide the input and button after submission
+};
   const handleCheckAndCreate = async () => {
     try {
       const response = await createWorkDayWithFirstInterval();
       if (response === "User is flexible.") {
 
-       // handleSubmit();
+        handleFlexible();
         setStatusMessage(response.data);
         console.log("Operación exitosa:", response.data);
       }
@@ -371,7 +381,20 @@ useEffect(() => {
   </div>
 </div>
 
-
+{isFlexibleInputVisible && (
+    <div className="flexible-input-container">
+      <input
+        type="number"
+        value={flexibleInput}
+        onChange={(e) => setFlexibleInput(e.target.value)}
+        placeholder="Enter value..."
+        className="flexible-input"
+      />
+      <button onClick={handleFlexibleSubmit} className="flexible-submit-btn">
+        Submit
+      </button>
+    </div>
+  )}
 
 
       {/* Info Cards */}

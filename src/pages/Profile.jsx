@@ -237,6 +237,19 @@ const Profile = () => {
             />
           </label>
         </div>
+        <div>
+          <label>Required total **** hours:</label>
+          {isEditing ? (
+            <input
+              type="number"
+              name="requiredHours"
+              value={formData.requiredHours}
+              onChange={handleChange}
+            />
+          ) : (
+            `${userInfo.requiredHours} h`
+          )}
+        </div>
         {isEditing ? (
           <div>
             <button onClick={handleEdit}>Save Changes</button>
