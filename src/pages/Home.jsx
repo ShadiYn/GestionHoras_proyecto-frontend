@@ -149,7 +149,7 @@ const Home = () => {
 
       // Recargar los intervalos después del check-out
       await loadIntervals();
-      alert("Check-out registrado correctamente!");
+      // alert("Check-out registrado correctamente!");
     } catch (error) {
       console.error("Error al registrar el check-out:", error);
       alert("Hubo un error al registrar el check-out.");
@@ -373,7 +373,6 @@ const Home = () => {
         <h1 className="titleWelcome">
           Bienvenido/a, {userInfo ? userInfo.name : "Cargando..."}{" "}
         </h1>
-        {/* Check-in and Check-out Buttons */}
         <div className="action-buttons">
           <div className="home">
             <button className="check-in-btn" onClick={handleCheckAndCreate}>
@@ -381,7 +380,6 @@ const Home = () => {
             </button>
             {statusMessage && <p>{statusMessage}</p>}
           </div>
-
           <div>
             <button className="check-out-btn" onClick={handleCheckOutClick}>
               Cerrar Intervalo
@@ -390,19 +388,22 @@ const Home = () => {
           </div>
         </div>
         {isFlexibleInputVisible && (
-    <div className="flexible-input-container">
-      <input
-        type="number"
-        value={flexibleInput}
-        onChange={(e) => setFlexibleInput(e.target.value)}
-        placeholder="Enter value..."
-        className="flexible-input"
-      />
-      <button onClick={handleFlexibleSubmit} className="flexible-submit-btn">
-        Submit
-      </button>
-    </div>
-  )}
+          <div className="flexible-input-container">
+            <input
+              type="number"
+              value={flexibleInput}
+              onChange={(e) => setFlexibleInput(e.target.value)}
+              placeholder="Enter value..."
+              className="flexible-input"
+            />
+            <button
+              onClick={handleFlexibleSubmit}
+              className="flexible-submit-btn"
+            >
+              Submit
+            </button>
+          </div>
+        )}
         {/* Info Cards */}
         <div className="info-cards">
           <div className="card">

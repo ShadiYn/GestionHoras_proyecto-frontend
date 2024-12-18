@@ -98,6 +98,36 @@ const Calendar = () => {
     }
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return ""; // Si el valor es nulo o indefinido
+
+    const [hours, minutes, seconds] = timeString.split(":"); // Divide el string en partes
+    const formattedSeconds = seconds.split(".")[0];
+    return `${hours}:${minutes}:${formattedSeconds}`; // Retorna horas y minutos
+  };
+
+  const formatDateWithDay = (dateString) => {
+    const days = [
+      "Domingo",
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado",
+    ];
+    const date = new Date(dateString); // Convierte el string a un objeto Date
+
+    const dayOfWeek = days[date.getDay()]; // Obtiene el día de la semana
+    const formattedDate = date.toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }); // Formatea la fecha en español
+
+    return `${dayOfWeek}, ${formattedDate}`; // Ejemplo: "Lunes, 17 de junio de 2024"
+  };
+
   return (
     <>
       <div>
@@ -113,23 +143,29 @@ const Calendar = () => {
         </nav>
       </div>
       <div>
-        <button onClick={handleCreateWorkDay}>Check In</button>
         <div className="workday-cards">
           {workDays && workDays.length > 0 ? (
             workDays.map((workDay) => (
               <div key={workDay.id} className="workday-card">
-                <h3>{workDay.day}</h3>
+                <h3>{formatDateWithDay(workDay.day)}</h3>
                 <ul>
                   {workDay.day === new Date().toISOString().split("T")[0] && (
-                    <div className="interval-card">
-                      <h3>Intervals</h3>
-                      <p>Start: {interval ? interval.start_time : "N/A"}</p>
-                      <p>End: {interval ? interval.end_time : "N/A"}</p>
+                    <div className="center-container">
+                      <div className="interval-card">
+                        <h3>Intervals</h3>
+                        <p>
+                          Start:
+                          {interval ? formatTime(interval.start_time) : ""}
+                        </p>
+                        <p>
+                          End: {interval ? formatTime(interval.end_time) : ""}
+                        </p>
+                      </div>
                     </div>
                   )}
                 </ul>
 
-                {workDay.day === new Date().toISOString().split("T")[0] && (
+                {/* {workDay.day === new Date().toISOString().split("T")[0] && (
                   <button
                     className="calendar-button"
                     onClick={async () => {
@@ -138,7 +174,7 @@ const Calendar = () => {
                   >
                     Check Out
                   </button>
-                )}
+                )} */}
                 <button onClick={() => handleWorkDayClick(workDay.id)}>
                   {selectedWorkDay === workDay.id
                     ? "Hide Intervals"
@@ -148,7 +184,7 @@ const Calendar = () => {
                   <div className="workday-intervals">
                     {workDayIntervals.length > 0 ? (
                       workDayIntervals.map((interval) => (
-                        <div key={interval.id} className="interval-card">
+                        <div key={interval.id} className="interval-cards">
                           <p>Start: {interval.start_time}</p>
                           <p>End: {interval.end_time}</p>
                         </div>

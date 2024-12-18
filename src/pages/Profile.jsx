@@ -134,7 +134,7 @@ const Profile = () => {
 
   return (
     <>
-    <nav className="navbar">
+      <nav className="navbar">
         <div className="navbar-links">
           <button className="nav-btn" onClick={handleHomeButton}>
             Home
@@ -145,156 +145,154 @@ const Profile = () => {
         </div>
         <p className="welcome">Welcome, {userInfo.name}</p>
       </nav>
-    <div className="home-container">
-      
-      <div className="user-info-container">
-        <div>
-          <label>Name:</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-            />
-          ) : (
-            userInfo.name
-          )}
-        </div>
-        <div>
-          <label>Username:</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-            />
-          ) : (
-            userInfo.username
-          )}
-        </div>
-        <div>
-          <label>Last name:</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-            />
-          ) : (
-            userInfo.lastName
-          )}
-        </div>
-        <div>
-          <label>Salary:</label>
-          {isEditing ? (
-            <input
-              type="number"
-              name="eurosPerHour"
-              value={formData.eurosPerHour}
-              onChange={handleChange}
-            />
-          ) : (
-            `${userInfo.eurosPerHour} €`
-          )}
-        </div>
-        <div>
-          <label>Extra salary:</label>
-          {isEditing ? (
-            <input
-              type="number"
-              name="eurosPerExtraHours"
-              value={formData.eurosPerExtraHours}
-              onChange={handleChange}
-            />
-          ) : (
-            `${userInfo.eurosPerExtraHours} €`
-          )}
-        </div>
-        <div className="schedule-container">
-          <label>
-            Flexible
-            <input
-              type="checkbox"
-              name="flexible"
-              checked={formData.flexible}
-              onChange={handleChange}
-              disabled={!isEditing}
-            />
-          </label>
-          <label>
-            Normal
-            <input
-              type="checkbox"
-              name="normal"
-              checked={!formData.flexible}
-              onChange={(e) =>
-                setFormData({ ...formData, flexible: !e.target.checked })
-              }
-              disabled={!isEditing}
-            />
-          </label>
-        </div>
-        {isEditing ? (
+      <div className="home-container">
+        <div className="user-info-container">
           <div>
-            <button onClick={handleEdit}>Save Changes</button>
-            <button onClick={handleCancel} className="cancel-button">
-              Cancel
-            </button>
+            <label>Name:</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+              />
+            ) : (
+              userInfo.name
+            )}
           </div>
-        ) : (
-          <button onClick={() => setIsEditing(true)} className="button-group">
-            Edit Profile
-          </button>
-        )}
-        <Modal
-          show={modal}
-          title={modalTitle}
-          message={modalMessage}
-          onClose={() => setModal(false)}
-          onConfirm={() => setModal(false)} // El mismo comportamiento para confirmar
-        />
-
-        <div>
-          <button onClick={() => setModalPassword(true)}>
-            Change Password
-          </button>
+          <div>
+            <label>Username:</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+              />
+            ) : (
+              userInfo.username
+            )}
+          </div>
+          <div>
+            <label>Last name:</label>
+            {isEditing ? (
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+              />
+            ) : (
+              userInfo.lastName
+            )}
+          </div>
+          <div>
+            <label>Salary:</label>
+            {isEditing ? (
+              <input
+                type="number"
+                name="eurosPerHour"
+                value={formData.eurosPerHour}
+                onChange={handleChange}
+              />
+            ) : (
+              `${userInfo.eurosPerHour} €`
+            )}
+          </div>
+          <div>
+            <label>Extra salary:</label>
+            {isEditing ? (
+              <input
+                type="number"
+                name="eurosPerExtraHours"
+                value={formData.eurosPerExtraHours}
+                onChange={handleChange}
+              />
+            ) : (
+              `${userInfo.eurosPerExtraHours} €`
+            )}
+          </div>
+          <div className="schedule-container">
+            <label>
+              Flexible
+              <input
+                type="checkbox"
+                name="flexible"
+                checked={formData.flexible}
+                onChange={handleChange}
+                disabled={!isEditing}
+              />
+            </label>
+            <label>
+              Normal
+              <input
+                type="checkbox"
+                name="normal"
+                checked={!formData.flexible}
+                onChange={(e) =>
+                  setFormData({ ...formData, flexible: !e.target.checked })
+                }
+                disabled={!isEditing}
+              />
+            </label>
+          </div>
+          {isEditing ? (
+            <div>
+              <button onClick={handleEdit}>Save Changes</button>
+              <button onClick={handleCancel} className="cancel-button">
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button onClick={() => setIsEditing(true)} className="button-group">
+              Edit Profile
+            </button>
+          )}
           <Modal
-            show={modalPassword}
-            title="Change Password"
-            onClose={() => setModalPassword(false)}
-            onConfirm={handlePasswordSubmit}
-          >
-            <form>
-              <div>
-                <label>New Password:</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={passwordData.password}
-                  onChange={handlePasswordChange}
-                  required
-                />
-              </div>
-              <div>
-                <label>Confirm New Password:</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={passwordData.confirmPassword}
-                  onChange={handlePasswordChange}
-                  required
-                />
-              </div>
-            </form>
-          </Modal>
+            show={modal}
+            title={modalTitle}
+            message={modalMessage}
+            onClose={() => setModal(false)}
+            onConfirm={() => setModal(false)} // El mismo comportamiento para confirmar
+          />
+
+          <div>
+            <button onClick={() => setModalPassword(true)}>
+              Change Password
+            </button>
+            <Modal
+              show={modalPassword}
+              title="Change Password"
+              onClose={() => setModalPassword(false)}
+              onConfirm={handlePasswordSubmit}
+            >
+              <form>
+                <div>
+                  <label>New Password:</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={passwordData.password}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label>Confirm New Password:</label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={passwordData.confirmPassword}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                </div>
+              </form>
+            </Modal>
+          </div>
         </div>
       </div>
-    </div>
     </>
-    
   );
 };
 
