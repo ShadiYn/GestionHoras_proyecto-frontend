@@ -134,7 +134,7 @@ const Profile = () => {
 
   return (
     <>
-    <nav className="navbar">
+      <nav className="navbar">
         <div className="navbar-links">
           <button className="nav-btn" onClick={handleHomeButton}>
             Home
@@ -270,44 +270,43 @@ const Profile = () => {
           onConfirm={() => setModal(false)} // El mismo comportamiento para confirmar
         />
 
-        <div>
-          <button onClick={() => setModalPassword(true)}>
-            Change Password
-          </button>
-          <Modal
-            show={modalPassword}
-            title="Change Password"
-            onClose={() => setModalPassword(false)}
-            onConfirm={handlePasswordSubmit}
-          >
-            <form>
-              <div>
-                <label>New Password:</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={passwordData.password}
-                  onChange={handlePasswordChange}
-                  required
-                />
-              </div>
-              <div>
-                <label>Confirm New Password:</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={passwordData.confirmPassword}
-                  onChange={handlePasswordChange}
-                  required
-                />
-              </div>
-            </form>
-          </Modal>
+          <div>
+            <button onClick={() => setModalPassword(true)}>
+              Change Password
+            </button>
+            <Modal
+              show={modalPassword}
+              title="Change Password"
+              onClose={() => setModalPassword(false)}
+              onConfirm={handlePasswordSubmit}
+            >
+              <form>
+                <div>
+                  <label>New Password:</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={passwordData.password}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <label>Confirm New Password:</label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={passwordData.confirmPassword}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                </div>
+              </form>
+            </Modal>
+          </div>
         </div>
       </div>
-    </div>
     </>
-    
   );
 };
 
