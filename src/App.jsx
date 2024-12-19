@@ -1,9 +1,10 @@
 // App.jsx
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useUserContext } from './providers/UserProvider';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Router from './app/Router'; // Rutas protegidas
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useUserContext } from "./providers/UserProvider";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Router from "./app/Router"; // Rutas protegidas
 
 const App = () => {
   const { user } = useUserContext(); // Obtenemos el usuario desde el contexto

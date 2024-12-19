@@ -1,8 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../providers/UserProvider";
-import '../app/Home.css'; 
-import {createWorkdayflexible, getNumberUnattended, getUserIntervals, getAllIntervals, getCurrentInterval, createWorkDayWithFirstInterval, handleCheckOut, getWorkDaysForCurrentMonth, getIntervalsForWorkDay, userDetails} from '../api/api';
+import "../app/Home.css";
+import {
+  createWorkdayflexible,
+  getNumberUnattended,
+  getUserIntervals,
+  getAllIntervals,
+  getCurrentInterval,
+  createWorkDayWithFirstInterval,
+  handleCheckOut,
+  getWorkDaysForCurrentMonth,
+  getIntervalsForWorkDay,
+  userDetails,
+} from "../api/api";
 
 const Home = () => {
   const { setUser } = useUserContext();
@@ -23,9 +34,7 @@ const Home = () => {
   const [isFlexibleInputVisible, setFlexibleInputVisible] = useState(false);
   const [flexibleInput, setFlexibleInput] = useState(""); // State to store the input value
 
-
-
-// UseEffect para obtener los datos del usuario cuando se monte el componente
+  // UseEffect para obtener los datos del usuario cuando se monte el componente
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -81,30 +90,29 @@ const Home = () => {
       return 0; // Si userInfo es null o requiredHours no está definido, retornamos 0
     }
 
-  const MonthHours = userInfo.requiredHours * 4; 
-  if (totalHours > MonthHours) {
-    const extraTotal = totalHours - MonthHours;
-    console.log('Respuesta horas extra:', extraTotal);
-    return extraTotal;
-  }
-  return 0; // Si no hay horas extra
-};
+    const MonthHours = userInfo.requiredHours * 4;
+    if (totalHours > MonthHours) {
+      const extraTotal = totalHours - MonthHours;
+      console.log("Respuesta horas extra:", extraTotal);
+      return extraTotal;
+    }
+    return 0; // Si no hay horas extra
+  };
 
-const handleFlexible = () => {
-  setFlexibleInputVisible(true); // Show the input and button
-};
-// Handle the button click to process the input
-const handleFlexibleSubmit = () => {
-  createWorkdayflexible(flexibleInput);
-  console.log("Flexible input value:", flexibleInput);
-  setFlexibleInput(""); // Clear the input field
-  setFlexibleInputVisible(false); // Hide the input and button after submission
-};
+  const handleFlexible = () => {
+    setFlexibleInputVisible(true); // Show the input and button
+  };
+  // Handle the button click to process the input
+  const handleFlexibleSubmit = () => {
+    createWorkdayflexible(flexibleInput);
+    console.log("Flexible input value:", flexibleInput);
+    setFlexibleInput(""); // Clear the input field
+    setFlexibleInputVisible(false); // Hide the input and button after submission
+  };
   const handleCheckAndCreate = async () => {
     try {
       const response = await createWorkDayWithFirstInterval();
       if (response === "User is flexible.") {
-
         handleFlexible();
         setStatusMessage(response.data);
         console.log("Operación exitosa:", response.data);
@@ -314,18 +322,18 @@ const handleFlexibleSubmit = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchIntervals = async () => {
-      try {
-        const intervals = await getAllIntervals();
-        console.log("Intervalos obtenidos:", intervals);
-        setIntervals(intervals);
-      } catch (error) {
-        console.error("Error al obtener los intervalos:", error);
-      }
-    };
-    fetchIntervals();
-  }, []);
+  // useEffect(() => {
+  //   const fetchIntervals = async () => {
+  //     try {
+  //       const intervals = await getAllIntervals();
+  //       console.log("Intervalos obtenidos:", intervals);
+  //       setIntervals(intervals);
+  //     } catch (error) {
+  //       console.error("Error al obtener los intervalos:", error);
+  //     }
+  //   };
+  //   fetchIntervals();
+  // }, []);
 
   useEffect(() => {
     const fetchUnattended = async () => {
@@ -362,40 +370,44 @@ const handleFlexibleSubmit = () => {
         </div>
       </nav>
       <div className="home-container">
+        <div className="centered">
+          <h1 className="titleWelcome">
+            Welcome, {userInfo ? userInfo.name : "Loading..."}{" "}
+          </h1>
+          {/* Check-in and Check-out Buttons */}
+          <div className="action-buttons">
+            <div className="home">
+              <button className="check-in-btn" onClick={handleCheckAndCreate}>
+                Check-in
+              </button>
+              {statusMessage && <p>{statusMessage}</p>}
+            </div>
 
-        <div className='centered'>
+            <div>
+              <button className="check-out-btn" onClick={handleCheckOutClick}>
+                Check-out
+              </button>
+              {error && <p style={{ color: "red" }}>{error}</p>}
+            </div>
+          </div>
 
-    
-        <h1 className='titleWelcome'>Welcome, {userInfo ? userInfo.name : 'Loading...'} </h1>
-   {/* Check-in and Check-out Buttons */}
-<div className="action-buttons">
-  <div className="home">
-  
-    <button className="check-in-btn" onClick={handleCheckAndCreate}>Check-in</button>
-    {statusMessage && <p>{statusMessage}</p>}
-  </div>
-    
-  <div>
-    <button className="check-out-btn" onClick={handleCheckOutClick}>Check-out</button>
-    {error && <p style={{ color: 'red' }}>{error}</p>}
-  </div>
-</div>
-
-{isFlexibleInputVisible && (
-    <div className="flexible-input-container">
-      <input
-        type="number"
-        value={flexibleInput}
-        onChange={(e) => setFlexibleInput(e.target.value)}
-        placeholder="Enter value..."
-        className="flexible-input"
-      />
-      <button onClick={handleFlexibleSubmit} className="flexible-submit-btn">
-        Submit
-      </button>
-    </div>
-  )}
-
+          {isFlexibleInputVisible && (
+            <div className="flexible-input-container">
+              <input
+                type="number"
+                value={flexibleInput}
+                onChange={(e) => setFlexibleInput(e.target.value)}
+                placeholder="Enter value..."
+                className="flexible-input"
+              />
+              <button
+                onClick={handleFlexibleSubmit}
+                className="flexible-submit-btn"
+              >
+                Submit
+              </button>
+            </div>
+          )}
 
           {/* Info Cards */}
           <div className="info-cards">
